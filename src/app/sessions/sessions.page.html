@@ -1,0 +1,132 @@
+  
+<!-- <ion-content class="ion-margin-top"> -->
+<ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end" >
+   <ion-row class="ion-margin-top" *ngIf="!newCase.id"> 
+    <ion-col size="12">
+      <ion-toolbar >
+        <ion-title class="fontLarge">   <ion-text> جلسات قضية </ion-text>  <ion-text>  {{newCase.case_title}}  </ion-text>  </ion-title>
+        <ion-buttons slot="end">
+          <ion-searchbar class="custSearch"> </ion-searchbar>  
+        </ion-buttons>
+        <ion-button slot="end"  fill="outline" (click)="newSessionPage()"  color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark">جلسة جديدة </ion-text>     
+        </ion-button> 
+      </ion-toolbar>
+    </ion-col> 
+  </ion-row>  
+
+
+  <ion-row>
+    <ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+      <ion-row class="ion-margin-top">
+        <ion-card class="w100 ion-margin-top">
+          <ion-card-header class="listHed">
+            <ion-col size="12">
+              <ion-toolbar >
+                <ion-button class="rad10"  fill="outline"  color="medium">
+                  <ion-icon color="dark"  slot="icon-only" name="filter"></ion-icon>
+                </ion-button>
+                <ion-button class="rad10"  fill="outline"  color="medium" (click)="refreshSessions()">
+                  <ion-icon  slot="icon-only" color="dark" name="refresh"></ion-icon>
+                </ion-button>
+                <!-- <ion-title class="fontLarge">   <ion-text> جلسات قضية </ion-text>  <ion-text>  {{newCase.case_title}}  </ion-text>  </ion-title> -->
+                <ion-buttons slot="end"  *ngIf="newCase.id">
+                  <ion-searchbar class="custSearch"> </ion-searchbar>  
+                </ion-buttons>
+                <ion-button  *ngIf="newCase.id" slot="end"  fill="outline" (click)="newSessionPage()"  color="medium" class="custButton rad10">
+                  <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                     <ion-text color="dark">جلسة جديدة </ion-text>     
+                </ion-button> 
+              </ion-toolbar>
+            </ion-col> 
+          </ion-card-header>
+          <ion-grid class="ion-no-padding"> 
+            <ion-row>
+              <ion-col size="12" class="ion-no-padding custCol">
+                <table  class="table"  >
+                  <tr>
+                   <th>
+                     عنوان الجلسة   
+                   </th> 
+                   <th>  تاريخ الجلسة
+                   </th> 
+                   <th>  التوقيت 
+                   </th>
+                   <th >حالة الجلسة 
+                   </th>
+                   <th>    الملفات المرفقة 
+                  </th> 
+                     
+                   <th><strong>تعديل</strong>  </th> 
+                   
+                  </tr>
+                   
+                  <tr *ngFor="let session of sessionsArray">
+                     <td>
+                       <ion-text> {{session.session_title}} </ion-text> 
+                     </td>
+                     <td>
+                       <ion-text>{{session.session_date | formatDate}} </ion-text> 
+                     </td>
+                     <td>
+                       <ion-text> {{session.session_time | formatTime}}    </ion-text>
+                     </td> 
+                     <td>
+                       <ion-text *ngIf="session.session_status == 0">    جديدة        </ion-text> 
+                       <ion-text  *ngIf="session.session_status == 1"> منتهية      </ion-text>  
+                     </td>
+                     <td> 
+                      <ion-button fill="clear" (click)="getSessionDetails(session , 'files')"><ion-icon name="folder-open-outline" color="meduim"  ></ion-icon></ion-button>
+                    </td>  
+                     <td>
+                       <ion-button fill="clear" (click)="getSessionDetails(session , 'basics')" ><ion-icon name="create-outline" color="meduim"></ion-icon></ion-button>
+                     </td> 
+                  </tr> 
+                   
+
+                    <tr *ngIf="loading == true">
+                   <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+                   <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+                   <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+                   <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+                   <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+                   <td>  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+                   <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+                  </tr>   
+                </table>
+                
+                
+                <ion-row class="ion-justify-content-center ion-margin-top" *ngIf="showEmpty == true"> 
+                 <ion-col size="4" class="ion-text-center">  
+                   <ion-label> 
+                     <ion-icon style="font-size: 30px;"  name="archive-outline"></ion-icon>
+                  </ion-label>
+                  <h4> لا توجد سجلات </h4> 
+                 </ion-col>
+               </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid> 
+    
+          <ion-card-header class="listHed">
+            <ion-col size="12">
+              <ion-toolbar >
+                <ion-button class="rad10"  fill="clear">
+                  <ion-icon color="dark"   name="chevron-back"></ion-icon> 
+                  <ion-text color="dark" >السابق</ion-text> 
+                </ion-button>
+                <ion-button class="rad10 fleft"  fill="clear"> 
+                  <ion-text color="dark"  >التالي</ion-text>
+                  <ion-icon color="dark"   name="chevron-forward"></ion-icon>
+                 
+                </ion-button>
+              </ion-toolbar>
+            </ion-col>
+          </ion-card-header>
+        </ion-card>
+      </ion-row>
+    </ion-grid>
+  </ion-row>
+</ion-grid>
+<!-- </ion-content> -->

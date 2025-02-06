@@ -1,3 +1,191 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
+<ion-app > 
+  <ion-header class="ion-no-border" *ngIf="isAuth == true">
+    <ion-toolbar class="toolBarCutom"> 
+         <ion-title class="fltRight ion-margin-top">نظام مكاتب المحاماة</ion-title> 
+         <ion-buttons  class="ion-margin-end fltLeft">
+          <!-- <div class="langContainer"> 
+            <ion-button (click)="switchLanguage('ar-SA')" class="langBtn" [ngClass]="{'active':locale === 'ar-SA'}">هجري</ion-button>
+            <ion-button (click)="switchLanguage('en-US')" class="langBtn" [ngClass]="{'active':locale === 'en-US'}">ميلادي</ion-button>
+          </div> -->
+
+          <div class="circleDev"> 
+            <ion-button fill="clear"  (click)="filter('black')" *ngIf="selectedIdx == 'light'"> 
+              <ion-icon name="moon-outline"   class="ico" ></ion-icon> 
+            </ion-button> 
+
+            <ion-button fill="clear"  (click)="filter('light')"  *ngIf="selectedIdx == 'black'">  
+              <ion-icon  name="sunny-outline"   class="ico" ></ion-icon> 
+            </ion-button>
+          </div>
+
+          <!-- <ion-row>   
+            <div (click)="filter('black')" class="ion-padding black custDiv" [ngClass]="{'selectedF': selectedIdx == 'black' , 'noneSelected': selectedIdx !='black' }"><ion-text></ion-text></div>
+            <div (click)="filter('gray')" class="ion-padding gray custDiv" [ngClass]="{'selectedF': selectedIdx == 'gray' , 'noneSelected': selectedIdx !='gray' }"> <ion-text></ion-text></div>
+            <div (click)="filter('light')" class="ion-padding light custDiv" [ngClass]="{'selectedF': selectedIdx == 'light' , 'noneSelected': selectedIdx !='light' }"> <ion-text></ion-text></div>
+            <div (click)="filter('yallow')" class="ion-padding yallow custDiv" [ngClass]="{'selectedF': selectedIdx == 'yallow' , 'noneSelected': selectedIdx !='yallow' }"> <ion-text></ion-text></div>
+           </ion-row> -->
+
+          <div class="circleDev">
+            <ion-badge color="danger" class="notiifBadge">1</ion-badge>
+            <ion-button fill="clear"  (click)="presentPopoverNotif($event)"> 
+              <ion-icon name="notifications-outline"   class="ico" ></ion-icon>
+            </ion-button> 
+            <ion-popover #popoverNotif [isOpen]="isOpenNotif" (didDismiss)="didDissmisNotif()">
+              <ng-template>
+                <ion-content>
+                  <ion-list dir="rtl"> 
+                    <ion-list-header>
+                      <ion-label>الإشعارات</ion-label>
+                      <!-- <ion-button fill="clear" size="small" (click)="markAllAsRead()">
+                        Mark all as read
+                      </ion-button> -->
+                    </ion-list-header>
+            
+                    <ion-item-sliding *ngFor="let notification of notificationsarr">
+                      <ion-item [class.unread]="notification.is_read == 0 " (click)="markAsRead(notification)">
+                        <!-- <ion-icon [name]="getIconByType(notification.type)" slot="start" 
+                                 [color]="notification.type"></ion-icon> -->
+                        <ion-label>
+                          <h2>{{notification.title}}</h2>
+                          <p>{{notification.notification_message.substring(0,20)}}.</p>
+                          <p class="time">{{notification.date  | formatDate}}</p>
+                        </ion-label>
+                      </ion-item>
+            
+                      <ion-item-options side="end">
+                        <ion-item-option color="danger" (click)="deleteNotification(notification.id)">
+                          <ion-icon slot="icon-only" name="trash"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-popover> 
+          </div>
+
+
+          <div class="circleDev">
+            <ion-button fill="clear" (click)="presentPopoverProfile($event)">
+              <ion-icon name="person-outline"  class="ico" ></ion-icon>
+            </ion-button> 
+            <!-- popover  -->
+            <ion-popover #popoverProfile [isOpen]="isOpenProfile" (didDismiss)="didDissmisProfile()">
+              <ng-template>
+                <ion-content>
+                  <ion-list dir="rtl">
+                    <ion-item>
+                      <ion-avatar slot="start">
+                        <ion-icon name="person-outline"  class="ico" ></ion-icon>
+                      </ion-avatar>
+                      <ion-label>
+                        <h2>{{USER_INFO.full_name}}</h2>
+                        <p>{{USER_INFO.email}}</p>
+                      </ion-label>
+                    </ion-item>
+            
+                    <ion-item button lines="none">
+                      <ion-icon  name ="calendar-outline" slot="start"></ion-icon>
+                      <ion-label > التقويم</ion-label>  
+                      <div class="langContainer"  >  
+                        <ion-button fill="clear" (click)="switchLanguage('ar-SA')" class="langBtn" [ngClass]="{'active':locale === 'ar-SA'}">هجري</ion-button>
+                        <ion-button fill="clear" (click)="switchLanguage('en-US')" class="langBtn" [ngClass]="{'active':locale === 'en-US'}">ميلادي</ion-button>
+                      </div>
+                    </ion-item>
+                    <ion-item dir="rtl" button lines="none" *ngFor="let item of userActions" (click)="handleAction($event, item)">
+                      <ion-icon [name]="item.icon" slot="start"></ion-icon>
+                      <ion-label>{{item.title}}</ion-label> 
+                    </ion-item>
+                  </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+
+          </div>
+           
+          <ion-buttons class="fltLeft">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+        </ion-buttons>  
+    </ion-toolbar>
+  </ion-header>
+  <ion-content dir="rtl"> 
+    <ion-split-pane contentId="side" *ngIf="isAuth == true">   
+      <!-- *ngIf="isAuth == true"  -->
+    <ion-menu contentId="side"  side="start"  dir="rtl"   type="overlay"> 
+        <ion-list id="inbox-list" dir="rtl" class="listBg h100"> 
+          <!-- <ion-item-divider class="itemBg dividerBorder ion-margin-bottom"></ion-item-divider> -->
+          <ion-item class="itemBg"  routerDirection="root" lines="none"   routerLink="folder/dashboard" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="home"></ion-icon> 
+            <ion-label class="ion-margin-start"> الرئيسية </ion-label>
+          </ion-item>
+          <!-- <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/contracts" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="reader"></ion-icon> 
+            <ion-label class="ion-margin-start"> العقود </ion-label> 
+          </ion-item> -->
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/cases" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="briefcase"></ion-icon> 
+            <ion-label class="ion-margin-start"> القضايـا </ion-label> 
+          </ion-item>
+
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/sessions" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="briefcase"></ion-icon> 
+            <ion-label class="ion-margin-start"> الجلسات </ion-label> 
+          </ion-item>
+          
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/consultations" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="people"></ion-icon> 
+            <ion-label class="ion-margin-start"> الإستشارات </ion-label>
+          </ion-item> 
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/tasks" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="list"></ion-icon> 
+            <ion-label class="ion-margin-start"> المهام </ion-label>
+          </ion-item>
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/celander" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="calendar-number"></ion-icon> 
+            <ion-label class="ion-margin-start"> التقويم </ion-label>
+          </ion-item>  
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="notifications" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="notifications-outline"></ion-icon> 
+            <ion-label class="ion-margin-start"> التنبيهات  </ion-label>
+          </ion-item> 
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/customers" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="people-circle-outline"></ion-icon> 
+            <ion-label class="ion-margin-start"> العمـلاء </ion-label>
+          </ion-item>
+          <ion-item *ngIf="USER_INFO.level == 2" class="itemBg" routerDirection="root" lines="none"   routerLink="folder/users" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="person"></ion-icon> 
+            <ion-label class="ion-margin-start"> المستخدمين </ion-label>
+          </ion-item>
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/settings" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="cog-outline"></ion-icon> 
+            <ion-label class="ion-margin-start"> الإعدادات </ion-label>
+          </ion-item>
+          <ion-item class="itemBg" routerDirection="root" lines="none"  detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="cash"></ion-icon> 
+            <ion-label class="ion-margin-start"> الحسابات </ion-label>
+          </ion-item>
+          <ion-item class="itemBg" routerDirection="root" lines="none"   routerLink="folder/notif" detail="false" routerLinkActive="selected">
+            <ion-icon class="ico" color="dark" name="paper-outline"></ion-icon> 
+            <ion-label class="ion-margin-start"> التقارير  </ion-label>
+          </ion-item> 
+           
+       
+        <!-- <ion-accordion-group>
+            <ion-accordion value="first">
+              <ion-item class="itemBg" slot="header" color="light">
+               <ion-icon class="ico" color="primary" name="cog-outline"></ion-icon>  
+                <ion-label>القضايـا</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">قضية جديدة</div>
+            </ion-accordion> 
+        </ion-accordion-group>  -->
+        </ion-list> 
+     
+    </ion-menu>
+    <!-- *ngIf="isAuth == true" -->
+        <ion-router-outlet id="side" *ngIf="isAuth == true" > </ion-router-outlet> 
+    </ion-split-pane> 
+  </ion-content>   
+   <ion-router-outlet *ngIf="isAuth == false"></ion-router-outlet> 
 </ion-app>

@@ -1,0 +1,138 @@
+<!-- <ion-header>
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+     <ion-buttons slot="end" class="ion-margin-end">
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="notifications-outline"   class="ico" ></ion-icon>
+        </ion-button>
+      </div>
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="person-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-header> -->
+
+<!-- <ion-content>   -->
+  <ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+    <!-- <ion-row class="ion-margin-top"> 
+      <ion-col size="12">
+        <ion-toolbar >
+          <ion-title class="fontLarge">   <ion-text> ملفات قضية </ion-text>  <ion-text>  {{newCase.case_title}}  </ion-text>  </ion-title>
+          <ion-buttons slot="end">
+            <ion-searchbar class="custSearch"> </ion-searchbar>  
+          </ion-buttons>
+          <ion-button slot="end"  fill="outline" (click)="newFilePage()"  color="medium" class="custButton rad10">
+            <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+               <ion-text color="dark">إضافة ملف   </ion-text>     
+          </ion-button> 
+        </ion-toolbar>
+      </ion-col> 
+    </ion-row> -->
+
+      <ion-row class="ion-margin-top">
+        <ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+          <ion-row class="ion-margin-top">
+        <ion-card class="w100 ion-margin-top">
+          <ion-card-header class="listHed">
+            <ion-col size="12">
+              <ion-toolbar>
+                <!-- <ion-button class="rad10"  fill="outline"  color="medium">
+                  <ion-icon color="dark"  slot="icon-only" name="filter"></ion-icon>
+                </ion-button> -->
+                <ion-button class="rad10"  fill="outline"  color="medium"  (click)="refreshFiles()"> 
+                  <ion-icon  slot="icon-only" color="dark" name="refresh" ></ion-icon>
+                </ion-button> 
+                <!-- <ion-buttons slot="end">
+                  <ion-searchbar class="custSearch"> </ion-searchbar>  
+                </ion-buttons> -->
+                <ion-button slot="end"  fill="outline" (click)="newFilePage()"  color="medium" class="custButton rad10">
+                  <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                     <ion-text color="dark">إضافة خدمة   </ion-text>     
+                </ion-button> 
+              </ion-toolbar>
+            </ion-col> 
+         
+          </ion-card-header>
+          <ion-grid class="ion-no-padding"> 
+            <ion-row>
+              <ion-col size="12" class="ion-no-padding custCol">
+                <table  class="table" >
+                  <tr>
+                    <th>
+                      التسلسل
+                    </th>  
+                    <th>  عنوان الخدمة
+                    </th> 
+                    <th>  نوع الخدمة
+                    </th>
+                   
+                    <th>  تعليق  
+                    </th>
+                    <th><strong>حذف</strong>  </th>  
+                  </tr>
+                  
+                  <tr>
+                    <th>     
+                    </th> 
+                    <th>     
+                    </th>
+                    <th>     
+                    </th>
+                    <th>     
+                    </th>
+                    <td>
+                      <ion-button fill="clear" ><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                    </td>  
+                  </tr>
+
+                  <!-- <tr *ngFor="let file of filesArr ; let i = index">
+                  <td>
+                    <ion-text> {{i+1}} </ion-text> 
+                  </td>
+                  <td>
+                    <ion-text>{{file.file_name}} </ion-text> 
+                  </td>
+                  <td>
+                   <ion-text>{{file.fileNote}} </ion-text> 
+                  </td>
+                  
+                  <td>
+                    <ion-button fill="clear" ><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                  </td>  
+                 </tr>  -->
+                </table>
+               
+               
+               <ion-row class="ion-justify-content-center ion-margin-top" *ngIf="showEmpty == true"> 
+                <ion-col size="4" class="ion-text-center">  
+                  <ion-label> 
+                    <ion-icon style="font-size: 30px;"  name="archive-outline"></ion-icon>
+                 </ion-label>
+                 <h4> لا توجد سجلات </h4> 
+                </ion-col>
+              </ion-row>
+             </ion-col>
+           </ion-row>
+          </ion-grid> 
+          <!-- <ion-card-header class="listHed">
+            <ion-button class="rad10"  fill="clear"   >
+              <ion-icon color="dark"   name="chevron-forward"></ion-icon>
+              <ion-text color="dark" >السابق</ion-text> 
+            </ion-button>
+            <ion-button class="rad10 fleft"  fill="clear"   > 
+              <ion-text color="dark"  >التالي</ion-text>
+              <ion-icon color="dark"   name="chevron-back"></ion-icon> 
+            </ion-button>
+          </ion-card-header> -->
+        </ion-card>
+        </ion-row>
+      </ion-grid>
+      </ion-row>
+  </ion-grid>
+ 
+
+<!-- </ion-content> -->

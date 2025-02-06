@@ -1,0 +1,334 @@
+<ion-header>
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+    <ion-title class="fontLarge">  تعديل بيانات عميل </ion-title> 
+     <ion-buttons slot="end" class="ion-margin-end" (click)="close()"> 
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-card class="w100">
+      <ion-card-content>
+        <ion-grid>
+          <form [formGroup]="ionicForm" (ngSubmit)="save()" novalidate> 
+            <ion-row>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> نوع العميل </strong></ion-label>
+                <ion-item class="custInput"  (click)="presentPopoverCustType($event)" >  
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label> {{selectedCustTye.name}}     </ion-label>
+                </ion-item>
+                <ion-popover  #popoverNotif [isOpen]="isOpenCustType" (didDismiss)="didDissmisCustType()">
+                  <ng-template>
+                    <ion-content  dir="rtl">  
+                      <ion-list class="ion-text-center"  *ngIf="custTypeArr.length>0">
+                       <ion-item button lines="none" *ngFor="let log of custTypeArr" (click)="selectFromPopTypes(log)">
+                       <ion-grid>
+                         <ion-row class="ion-justify-content-center">
+                           <ion-col size="9"> 
+                               {{log.name}}    
+                           </ion-col>
+                           <!-- <ion-col size="3">
+                             <ion-text color = "primary">{{log.datee | dateAgo}}</ion-text>
+                           </ion-col> -->
+                         </ion-row>
+                       </ion-grid>
+                     </ion-item> 
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="selectedCustTye.id == 0 || selectedCustTye.id == 4 "> 
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding" ><strong>  إسم العميل</strong></ion-label>
+                <ion-item class="custInput"> 
+                   <ion-input placeholder="" formControlName="cust_name"  [(ngModel)]="seledctedCustomer.cust_name"></ion-input>
+                   <ion-note slot="error" *ngIf="isSubmitted == true && errorControl.cust_name.errors?.required"> الحقل مطلوب</ion-note>
+                </ion-item>
+              </ion-col>
+             
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>     البريد </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="email"  [(ngModel)]="seledctedCustomer.email"></ion-input>
+                   <ion-note slot="error" *ngIf="isSubmitted == true && errorControl.email.errors?.required"> الحقل مطلوب</ion-note>
+                   <ion-note slot="error" *ngIf="isSubmitted == true && errorControl.email.errors?.pattern"> خطأ في صيغة البريد </ion-note> 
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> رقم الهاتف   </strong></ion-label>
+                
+                      <ion-item class="custInput">  
+                        <ion-input placeholder="" formControlName="phone" [(ngModel)]="seledctedCustomer.phone"></ion-input>
+                        <ion-note slot="error" *ngIf="isSubmitted == true && errorControl.phone.errors?.required"> الحقل مطلوب</ion-note>
+                        <ion-button  fill="clear" color="dark" (click)="presentPopoverKey($event)" slot="end">
+                          {{selectedPhoneKey.key }}
+                        </ion-button>
+                      </ion-item>
+                    
+                     
+                      <ion-popover  #popoverKey [isOpen]="isOpenKey" (didDismiss)="didDissmisKey()">
+                        <ng-template>
+                          <ion-header>
+                            <ion-toolbar dir="rtl">
+                              <ion-item class="normalInput ">
+                                <ion-input #popInput formControlName="searchTermKey" [(ngModel)] ="searchTermKey" ></ion-input>
+                                 
+                               </ion-item>
+                            </ion-toolbar>
+                          </ion-header>
+                          <ion-content class="ion-padding" dir="rtl"> 
+                            <!-- spinner -->
+                            <ion-list class="ion-text-center"  *ngIf="phoneKeysArr.length==0 && searchTermKey =='' ">
+                              <ion-label>
+                                <ion-spinner name="lines-sharp"></ion-spinner>
+                              </ion-label> 
+                            </ion-list>
+                             <ion-list *ngIf="phoneKeysArr.length>0">
+                              <ion-item lines="none" button *ngFor="let item of phoneKeysArr | filterSearch : searchTermKey " (click)="selectFromPopKey(item)">
+                                {{item.key}} - {{item.country}}
+                              </ion-item>
+                            </ion-list> 
+                          </ion-content>
+                        </ng-template>
+                      </ion-popover> 
+              </ion-col>
+               
+                <ion-col size="4" class="ion-margin-top">
+                  <ion-label class="ion-padding"><strong> العنوان </strong></ion-label>
+                  <ion-note style="float:left" *ngIf="isSubmitted == true && selectedCity.id == 0 "> الحقل مطلوب</ion-note>
+                  <ion-item class="custInput" (click)="presentPopover($event)">
+                    <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                    <ion-label> {{selectedCity.city }}     </ion-label>
+                  </ion-item>
+                  <ion-popover  #popover [isOpen]="isOpen" (didDismiss)="didDissmis()">
+                    <ng-template>
+                      <ion-header>
+                        <ion-toolbar dir="rtl">
+                          <ion-item class="normalInput">
+                            <ion-input formControlName="searchTerm" #popInput [(ngModel)] ="searchTerm"></ion-input>
+                            
+                          </ion-item>
+                        </ion-toolbar>
+                      </ion-header>
+                      <ion-content class="ion-padding" dir="rtl"> 
+                        <ion-list class="ion-text-center"  *ngIf="citiesArr.length==0 && searchTerm =='' ">
+                          <ion-label>
+                            <ion-spinner name="lines-sharp"></ion-spinner>
+                          </ion-label> 
+                        </ion-list>
+                         <ion-list *ngIf="citiesArr.length>0">
+                          <ion-item lines="none" button *ngFor="let item of citiesArr | filterSearchCity : searchTerm" (click)="selectFromPop(item)">
+                            {{item.city}} - {{item.region}}
+                          </ion-item>
+                        </ion-list> 
+                      </ion-content>
+                    </ng-template>
+                  </ion-popover>
+                </ion-col>
+               
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> العنوان الكامل        </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="  " formControlName="full_address"  [(ngModel)]="seledctedCustomer.full_address"></ion-input>
+                 
+                </ion-item>
+              </ion-col>
+  
+              <ion-col size="4" class="ion-margin-top">
+                <ion-radio-group formControlName="idType"   [(ngModel)]="idType" dir="rtl" (ionChange)="idTypeChange($event)">
+                <ion-label class="ion-padding"><strong>   إثبات الشخصية </strong></ion-label>
+                  <ion-grid class="ion-no-padding">
+                   <ion-row class="custInput">
+                     <ion-col class="ion-no-padding">
+                       <ion-item lines="none" dir="rtl">
+                         <ion-label>هوية</ion-label>  
+                         <ion-radio  slot="start" value="1"> </ion-radio>
+                       </ion-item>
+                     </ion-col>
+    
+                     <ion-col class="ion-no-padding">
+                      <ion-item lines="none" dir="rtl">
+                        <ion-label> جواز</ion-label>  
+                        <ion-radio  slot="start" value="2"> </ion-radio>
+                      </ion-item>
+                    </ion-col> 
+                   </ion-row>
+                  </ion-grid>
+                </ion-radio-group>
+              </ion-col> 
+  
+              <ion-col size="4" class="ion-margin-top" *ngIf="idType == 1">
+                <ion-label class="ion-padding"><strong>   رقم الهوية </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="cust_ident"  [(ngModel)]="seledctedCustomer.cust_ident"></ion-input> 
+                   <ion-note slot="error" *ngIf="isSubmitted == true   && errorControl.cust_ident.errors?.required"> الحقل مطلوب</ion-note>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top" *ngIf="idType == 2"> 
+                <ion-label class="ion-padding"><strong>   رقم الجواز </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="cust_ident"  [(ngModel)]="seledctedCustomer.passport"></ion-input> 
+                   <ion-note slot="error" *ngIf="isSubmitted == true && errorControl.passport.errors?.required"> الحقل مطلوب</ion-note>
+                </ion-item>
+              </ion-col> 
+          
+            </ion-row>
+            </form>
+        </ion-grid>
+
+<!-- company  -->
+
+        <ion-grid>
+          <form [formGroup]="ionicForm2" (ngSubmit)="save2()" novalidate> 
+            <ion-row *ngIf="selectedCustTye.id == 1 || selectedCustTye.id == 2 || selectedCustTye.id == 3 || selectedCustTye.id == 5">
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>  الأسم  </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="cust_name" [(ngModel)]="seledctedCustomer.cust_name"></ion-input>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.cust_name.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> رقم الهاتف   </strong></ion-label>
+                      <ion-item class="custInput">  
+                        <ion-input placeholder="" formControlName="phone" [(ngModel)]="seledctedCustomer.phone"></ion-input>
+                        <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.phone.errors?.required"> الحقل مطلوب</ion-note>
+                        <ion-button  fill="clear" color="dark" (click)="presentPopoverKey($event)" slot="end">
+                          {{selectedPhoneKey.key }}
+                        </ion-button>
+                      </ion-item> 
+                      <ion-popover  #popoverKey [isOpen]="isOpenKey" (didDismiss)="didDissmisKey()">
+                        <ng-template>
+                          <ion-header>
+                            <ion-toolbar dir="rtl">
+                              <ion-item class="normalInput ">
+                                <ion-input #popInput formControlName="searchTermKey" [(ngModel)] ="searchTermKey" ></ion-input>
+                                 
+                               </ion-item>
+                            </ion-toolbar>
+                          </ion-header>
+                          <ion-content class="ion-padding" dir="rtl"> 
+                            <!-- spinner -->
+                            <ion-list class="ion-text-center"  *ngIf="phoneKeysArr.length==0 && searchTermKey =='' ">
+                              <ion-label>
+                                <ion-spinner name="lines-sharp"></ion-spinner>
+                              </ion-label> 
+                            </ion-list>
+                             <ion-list *ngIf="phoneKeysArr.length>0">
+                              <ion-item lines="none" button *ngFor="let item of phoneKeysArr | filterSearch : searchTermKey " (click)="selectFromPopKey(item)">
+                                {{item.key}} - {{item.country}}
+                              </ion-item>
+                            </ion-list> 
+                          </ion-content>
+                        </ng-template>
+                      </ion-popover> 
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>     البريد </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="email" [(ngModel)]="seledctedCustomer.email"></ion-input>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.email.errors?.required"> الحقل مطلوب</ion-note>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.email.errors?.pattern">    خطأ في صيغة البريد  </ion-note>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top" *ngIf="selectedCustTye.id == 1 ">
+                <ion-label class="ion-padding"><strong>      الهوية الوطنية  </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="cust_ident" [(ngModel)]="seledctedCustomer.cust_ident"></ion-input>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.cust_ident.errors?.required"> الحقل مطلوب</ion-note>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top"  *ngIf="selectedCustTye.id == 1 ">
+                <ion-label class="ion-padding"><strong>          السجل التجاري  </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="company_regno" [(ngModel)]="seledctedCustomer.company_regno"></ion-input>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent.errors?.required"> الحقل مطلوب</ion-note>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent.errors?.pattern"> حروف فقط </ion-note>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> إسم ممثل    </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="company_represent" [(ngModel)]="seledctedCustomer.company_represent"></ion-input>
+                 <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent.errors?.required"> الحقل مطلوب</ion-note>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent.errors?.pattern"> حروف فقط </ion-note>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> صفة  ممثل    </strong></ion-label>
+                <ion-item class="custInput"> 
+                  <ion-input placeholder="" formControlName="company_represent_desc" [(ngModel)]="seledctedCustomer.company_represent_desc"></ion-input>
+                 <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent_desc.errors?.required"> الحقل مطلوب</ion-note>
+                  <ion-note slot="error" *ngIf="isSubmitted2 == true && errorControl2.company_represent_desc.errors?.pattern"> حروف فقط </ion-note>
+                </ion-item>
+              </ion-col>
+               
+              <ion-col size="4"  class="ion-margin-top">
+                <ion-col size="4" class="ion-margin-top">
+                  <ion-label class="ion-padding"><strong> العنوان </strong></ion-label>
+                  <ion-note style="float:left" *ngIf="isSubmitted == true && selectedCity.id == 0 "> الحقل مطلوب</ion-note>
+                  <ion-item class="custInput" (click)="presentPopover($event)">
+                    <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                    <ion-label> {{selectedCity.city }}     </ion-label>
+                    
+                  </ion-item>
+                  <ion-popover  #popover [isOpen]="isOpen" (didDismiss)="didDissmis()">
+                    <ng-template>
+                      <ion-header>
+                        <ion-toolbar dir="rtl">
+                          <ion-item class="normalInput ">
+                            <ion-input formControlName="searchTerm" #popInput [(ngModel)] ="searchTerm"></ion-input>
+                            
+                           </ion-item>
+                        </ion-toolbar>
+                      </ion-header>
+                      <ion-content class="ion-padding" dir="rtl"> 
+                        
+                        <ion-list class="ion-text-center"  *ngIf="citiesArr.length==0 && searchTerm =='' ">
+                          <ion-label>
+                            <ion-spinner name="lines-sharp"></ion-spinner>
+                          </ion-label> 
+                        </ion-list>
+                         <ion-list *ngIf="citiesArr.length>0">
+                          <ion-item lines="none" button *ngFor="let item of citiesArr | filterSearchCity : searchTerm" (click)="selectFromPop(item)">
+                            {{item.city}} - {{item.region}}
+                          </ion-item>
+                        </ion-list> 
+                      </ion-content>
+                    </ng-template>
+                  </ion-popover>
+                </ion-col>
+              </ion-col>
+                <ion-col size="4" class="ion-margin-top">
+                  <ion-label class="ion-padding"><strong> العنوان الكامل        </strong></ion-label>
+                  <ion-item class="custInput"> 
+                    <ion-input placeholder="" formControlName="full_address" [(ngModel)]="seledctedCustomer.full_address"></ion-input>
+                  </ion-item>
+                </ion-col>
+            </ion-row>
+            </form>
+        </ion-grid>
+
+      </ion-card-content>
+      <ion-card-header class="listHed" >
+        <ion-button *ngIf="selectedCustTye.id == 0 || selectedCustTye.id == 4"   fill="outline" (click)="save()"  color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> حفــظ   </ion-text>     
+        </ion-button> 
+        <ion-button *ngIf="selectedCustTye.id == 1 || selectedCustTye.id == 2 || selectedCustTye.id == 3 || selectedCustTye.id == 5 "     fill="outline" (click)="save2()"  color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> حفــظ   </ion-text>     
+        </ion-button> 
+      </ion-card-header>
+    </ion-card>
+  </ion-row>
+</ion-content>

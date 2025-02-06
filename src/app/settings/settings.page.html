@@ -1,0 +1,90 @@
+<ion-header class="ion-no-border borderBottomNone"> 
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+    <ion-title class="fontLarge">  بيانات الشركة </ion-title> 
+     <ion-buttons slot="end" class="ion-margin-end" (click)="close()"> 
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-card class="w100">
+      <ion-card-content>
+        <ion-grid>
+          <form [formGroup]="ionicForm" (ngSubmit)="save()" novalidate> 
+          <ion-row>
+          
+          </ion-row>
+          <ion-row *ngIf="USER_INFO">  
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding" ><strong>   اسم الشركة   </strong></ion-label>
+              <ion-item class="custInput"> 
+                 <ion-input placeholder="" formControlName="company_name"  [(ngModel)]="company.company_name"></ion-input>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.company_name.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+          
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>    العنوان الكامل  </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="full_address"  [(ngModel)]="company.full_address"></ion-input> 
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.full_address.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>     البريد </strong></ion-label>
+              <ion-item class="custInput"  > 
+                <ion-input placeholder="" formControlName="company_email"  [(ngModel)]="company.company_email"></ion-input>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.company_email.errors?.required"> الحقل مطلوب</ion-note>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.company_email.errors?.pattern"> خطأ في صيغة البريد </ion-note>
+              </ion-item>
+            </ion-col>
+
+           
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>  رقم الهاتف   </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="company_phone1" [(ngModel)]="company.company_phone1"></ion-input>
+                <ion-note  *ngIf="isSubmitted == true && errorControl.company_phone1.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+             
+          </ion-row>
+
+          <ion-row *ngIf="USER_INFO">
+            <ion-col size="3" > 
+              <ion-label class="ion-padding"><strong>الشعار</strong></ion-label>
+              <ion-item class="custInputFile" lines="none">
+                <img [src]="imageSrc" alt="image" style="width: 150px; height: 150px;">
+                  <input type="file" (change)="fileChange($event)">
+              </ion-item> 
+            </ion-col>
+          </ion-row>
+          </form>
+        </ion-grid> 
+      </ion-card-content>
+      <ion-card-header class="listHed" > 
+        <ion-grid>
+          <ion-row class="">
+            <ion-col size="4"  >
+              <ion-button size="small"     fill="outline" (click)="save()"  color="medium" class="custButton rad10">
+                <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                   <ion-text color="dark"> حفــظ   </ion-text>     
+              </ion-button> 
+            </ion-col>
+          </ion-row>
+          </ion-grid> 
+      </ion-card-header>
+    </ion-card>
+
+  </ion-row>
+</ion-content>

@@ -1,0 +1,46 @@
+
+
+<ion-content>
+  <ion-grid class="custRow" dir="rtl">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="6" *ngIf="device == 'desktop'">
+        <ion-card class="cust-card">
+          <ion-card-header class="ion-text-center">
+            <h3><strong>  تسجيل دخول  </strong>  </h3>  
+          </ion-card-header>
+  
+          <ion-grid class="ion-padding"> 
+             <ion-list>
+              <ion-item class="custInput">
+                <!-- <ion-icon name="lock-closed-outline" slot="end" ></ion-icon> -->
+                <ion-input [(ngModel)]="SUBSCRIBER_INFO.subscription_id" placeholder="رقم الإشتراك" ></ion-input>
+              </ion-item> 
+                <ion-item class="custInput">
+                  <!-- <ion-icon name="lock-closed-outline" slot="end" ></ion-icon> -->
+                <ion-input [(ngModel)]="SUBSCRIBER_INFO.user_name" placeholder="اسم المستخدم" ></ion-input>
+                </ion-item> 
+                <ion-item class="custInput ion-margin-top"   > 
+                    <ion-input type="password"  [(ngModel)]="SUBSCRIBER_INFO.password" placeholder="كلمة المرور" ></ion-input>
+                </ion-item>   
+             </ion-list>
+            <ion-row class="ion-justify-content-center ion-margin-top">
+              <ion-col size="5">
+                <ion-button expand="block" color="medium" fill="outline" class="custButton rad10" (click)="loginUser()">
+                    <ion-text color="dark"> دخــول </ion-text>     
+                </ion-button> 
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-button fill="clear" >
+                <ion-label><ion-text color="medium"><b>نسيت كلمة السر ?</b></ion-text></ion-label>
+              </ion-button>
+            </ion-row> 
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+  
+      
+    </ion-row>
+  </ion-grid>
+  </ion-content>
+  

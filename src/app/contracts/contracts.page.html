@@ -1,0 +1,151 @@
+
+<ion-header>
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+     <ion-buttons slot="end" class="ion-margin-end">
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="notifications-outline"   class="ico" ></ion-icon>
+        </ion-button>
+      </div>
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="person-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons>
+    <!-- <ion-buttons>
+        <ion-button fill="clear" color="danger" (click)="logOut()">
+        <ion-icon name="lock-closed-outline" color="danger"  slot="end"></ion-icon>
+        log out
+      </ion-button>
+      
+      <ion-buttons>   -->
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-margin-top"> 
+<ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+  <ion-row class="ion-margin-top">
+    <ion-col size="12">
+      <ion-toolbar >
+        <ion-title class="fontLarge">العقود</ion-title>
+        <ion-buttons slot="end">
+          <ion-searchbar class="custSearch"> </ion-searchbar>  
+        </ion-buttons>
+        <ion-button slot="end"  fill="outline" (click)="newCase()"  color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> عقد جديد </ion-text>     
+        </ion-button> 
+      </ion-toolbar>
+    </ion-col> 
+  </ion-row>
+
+  <ion-row class="ion-margin-top">
+    <ion-card class="w100 ion-margin-top">
+      <ion-card-header class="listHed">
+        <ion-button class="rad10"  fill="outline"  color="medium">
+          <ion-icon color="dark"  slot="icon-only" name="filter"></ion-icon>
+        </ion-button>
+        <ion-button class="rad10"  fill="outline"  color="medium" (click)="refresh()">
+          <ion-icon  slot="icon-only" color="dark" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-card-header>
+      <ion-grid class="ion-no-padding"> 
+        <!-- <ion-row>
+          <ion-col size="12" class="ion-no-padding custCol">
+            <table  class="table"  >
+              <tr>
+               <th>
+                 عنوان العقد  
+               </th> 
+               <th>  نوع العقد
+               </th> 
+               <th>  العميل 
+               </th>
+               <th >حالة العقد
+               </th>
+               <th>    تاريخ فتح العقد
+               </th> 
+               <th>    الجلسات
+              </th> 
+              <th>    الملفات المرفقة 
+              </th> 
+                 
+               <th><strong>تعديل</strong>  </th> 
+               
+              </tr>
+               
+               <tr *ngFor="let case of caseArr"  >
+                 <td>
+                   <ion-text> {{case.case_title}} </ion-text> 
+                 </td>
+                 <td>
+                   <ion-text>{{case.case_type}} </ion-text> 
+                 </td>
+                 <td>
+                   <ion-text> {{case.client_name}}    </ion-text>
+                 </td> 
+                 <td>
+                   <ion-text *ngIf="case.case_status == 1">  جاري العمل       </ion-text> 
+                   <ion-text  *ngIf="case.case_status == 0"> مغلقة      </ion-text> 
+                 </td>
+                 <td>
+                   <ion-text  > {{case.case_open_date}}       </ion-text> 
+                 </td>
+                 
+                 <td>
+                  <ion-button fill="clear" (click)="getSessions(case)"><ion-icon name="people-outline" color="meduim" ></ion-icon></ion-button>
+                </td> 
+                 <td> 
+                  <ion-button fill="clear" (click)="getFiles(case)"><ion-icon name="folder-open-outline" color="meduim"  ></ion-icon></ion-button>
+                </td> 
+                <td>
+                  <ion-button fill="clear" (click)="getCaseDetails(case)"><ion-icon name="create-outline" color="meduim"  ></ion-icon></ion-button>
+                </td>
+              
+                
+               </tr> 
+               
+                 
+
+                <tr *ngIf="loading == true">
+               <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+               <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+               <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+               <td> <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td> 
+               <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+               <td>  <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+               <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+               <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+               <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+              </tr>   
+            </table>
+            
+            
+            <ion-row class="ion-justify-content-center ion-margin-top" *ngIf="showEmpty == true"> 
+             <ion-col size="4" class="ion-text-center">  
+               <ion-label> 
+                 <ion-icon style="font-size: 30px;"  name="archive-outline"></ion-icon>
+              </ion-label>
+              <h4> لا توجد سجلات </h4> 
+             </ion-col>
+           </ion-row>
+          </ion-col>
+        </ion-row> -->
+      </ion-grid> 
+
+      <ion-card-header class="listHed">
+        <ion-button class="rad10"  fill="clear">
+          <ion-icon color="dark"   name="chevron-forward"></ion-icon>
+          <ion-text color="dark" >السابق</ion-text> 
+        </ion-button>
+        <ion-button class="rad10 fleft"  fill="clear"> 
+          <ion-text color="dark"  >التالي</ion-text>
+          <ion-icon color="dark"   name="chevron-back"></ion-icon> 
+        </ion-button>
+      </ion-card-header>
+    </ion-card>
+  </ion-row>
+</ion-grid>
+</ion-content>

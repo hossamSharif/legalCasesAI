@@ -1,0 +1,559 @@
+<ion-header>
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+    <ion-title class="fontLarge"> تعديل قضية   </ion-title>
+
+     <ion-buttons slot="end" class="ion-margin-end" (click)="close()">
+       
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons>
+   
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-margin-top"> 
+<ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+  <ion-row class="ion-margin-top">
+    <ion-col size="12">
+   
+    </ion-col> 
+  </ion-row>
+
+  <ion-row>
+    <ion-segment dir="rtl" (ionChange)="segmentCHange($event)" [(ngModel)]="segVal" class="ion-margin-top">
+      <ion-segment-button value="basics">
+        <ion-label class="segLable">البيانات الأساسية</ion-label>
+      </ion-segment-button> 
+      <ion-segment-button value="sessions">
+        <ion-label class="segLable"> الجلسات  </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="files">
+        <ion-label class="segLable">الملفات   </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-row>
+
+  <ion-row  *ngIf="segVal == 'basics'">
+    <ion-card class="w100">
+      <ion-card-content>
+        <ion-grid>
+        <!-- <form [formGroup]="ionicForm" (ngSubmit)="saveBasics()" novalidate> -->
+          <ion-row>
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding" ><strong> عنوان القضية </strong></ion-label>
+              <ion-note style="float:left" color="danger" *ngIf="isSubmitted == true && newCase.case_title == '' "> الحقل مطلوب</ion-note>
+
+              <ion-item class="custInput"> 
+                <ion-input  [(ngModel)]="newCase.case_title" placeholder="عنوان القضية" ></ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> رقم القضية </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="newCase.caseId_najz" placeholder=""></ion-input>
+              </ion-item>
+            </ion-col>
+
+            <!-- نوع القضية  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> نوع القضية </strong></ion-label>
+              <ion-note style="float:left" *ngIf="isSubmitted == true && newCase.case_type == '' "> الحقل
+                مطلوب</ion-note>
+              <ion-item class="custInput" (click)="presentPopoverNotif($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedType.name }} </ion-label>
+              </ion-item>
+              <ion-popover #popoverNotif [isOpen]="isOpenNotif" (didDismiss)="didDissmisNotif()"> 
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl">
+                      <ion-item class="normalInput">
+                        <ion-input  [(ngModel)]="searchTermCaseType"></ion-input> 
+                      </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content dir="rtl">
+                    <ion-list class="ion-text-center" *ngIf="caseTypeArr2.length>0">
+                      <ion-item button lines="none" *ngFor="let log of caseTypeArr2 | caseFilter : searchTermCaseType" (click)="selectFromPopTypes(log)">
+                        <ion-grid>
+                          <ion-row class="ion-justify-content-center">
+                            <ion-col size="9">
+                              {{log.name }}
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+
+            <!-- العميل -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> العميل </strong></ion-label>
+              <ion-note style="float:left" *ngIf="isSubmitted == true && newCase.client_id == 0 "> الحقل
+                مطلوب</ion-note>
+              <ion-item class="custInput" (click)="presentPopover($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedCustomer.cust_name}} </ion-label> 
+              </ion-item>
+              <ion-popover #popover [isOpen]="isOpen" (didDismiss)="didDissmis()">
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl">
+                      <ion-item class="normalInput">
+                        <ion-input  [(ngModel)]="searchTerm"></ion-input> 
+                      </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content class="ion-padding" dir="rtl">
+                    <!-- spinner -->
+                    <ion-list class="ion-text-center" *ngIf="costumerArr.length==0 && searchTerm =='' ">
+                      <ion-label>
+                        <ion-spinner name="lines-sharp"></ion-spinner>
+                      </ion-label>
+                    </ion-list>
+                    <ion-list *ngIf="costumerArr.length>0">
+                      <ion-item lines="none" button *ngFor="let item of costumerArr | customerFilter : searchTerm " (click)="selectFromPop(item)">
+                        {{item.cust_name}}
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+            <!-- صفة الموكل  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> صفة الموكل </strong></ion-label>
+              <ion-note style="float:left" *ngIf="isSubmitted == true && newCase.client_role == '' "> الحقل
+                مطلوب</ion-note>
+
+              <ion-item class="custInput" (click)="presentPopoverAgent($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedAgent.name}} </ion-label>
+              </ion-item>
+              <ion-popover #popoverِِAgent [isOpen]="isOpenAgent" (didDismiss)="didDissmisAgent()">
+                <ng-template>
+                  <ion-content dir="rtl">
+                    <ion-list class="ion-text-center" *ngIf="agentArr.length>0">
+                      <ion-item button lines="none" *ngFor="let log of agentArr" (click)="selectFromPopAgent(log)">
+                        <ion-grid>
+                          <ion-row class="ion-justify-content-center">
+                            <ion-col size="9">
+                              {{log.name}}
+                            </ion-col>
+                          
+                          </ion-row>
+                        </ion-grid>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+ 
+ 
+
+            <!-- <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>   تصنيف الخدمة </strong></ion-label>
+              <ion-note style="float:left" *ngIf="isSubmitted == true && newCase.service_classification == '' "> الحقل مطلوب</ion-note>
+
+              <ion-item class="custInput"  (click)="presentPopoverServ($event)" >  
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                <ion-label> {{selectedServ.name}}     </ion-label>
+              </ion-item>
+              <ion-popover  #popoverِِِِServClass  [isOpen]="isOpenServ" (didDismiss)="didDissmisServ()">
+                <ng-template>
+                  <ion-content  dir="rtl">  
+                    <ion-list class="ion-text-center"  *ngIf="servArr.length>0">
+                     <ion-item button lines="none" *ngFor="let log of servArr" (click)="selectFromPopServ(log)">
+                     <ion-grid>
+                       <ion-row class="ion-justify-content-center">
+                         <ion-col size="9"> 
+                             {{log.name}}    
+                         </ion-col>
+                        
+                       </ion-row>
+                     </ion-grid>
+                   </ion-item> 
+                    </ion-list> 
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col> -->
+
+            <!-- <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>   الفرع </strong></ion-label>
+              <ion-item class="custInput"  (click)="presentPopoverBranches($event)" >  
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                <ion-label> {{selectedBranch.name}}     </ion-label>
+              </ion-item>
+              <ion-popover  #popoverِBranch [isOpen]="isOpenBranch" (didDismiss)="didDissmisBranches()">
+                <ng-template>
+                  <ion-content  dir="rtl">  
+                    <ion-list class="ion-text-center"  *ngIf="BranchArr.length>0">
+                     <ion-item button lines="none" *ngFor="let log of BranchArr" (click)="selectFromPopBranch(log)">
+                     <ion-grid>
+                       <ion-row class="ion-justify-content-center">
+                         <ion-col size="9"> 
+                             {{log.name}}    
+                         </ion-col>
+                          
+                       </ion-row>
+                     </ion-grid>
+                   </ion-item> 
+                    </ion-list> 
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col> -->
+           
+            <!-- المحكمة -->
+            <ion-col size="4">
+              <ion-grid class="ion-no-padding">
+                <ion-row>
+                  <ion-col size="6" class="ion-text-start p10">
+                    <ion-label><strong> المحكمة </strong></ion-label>
+                  </ion-col>
+                  <ion-col size="6" class="ion-text-end">
+                    <ion-button (click)="presentCourtModal()" size="small" fill="clear" color="primary">
+                      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                      <strong> اضافة محكمة </strong>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <ion-item class="custInput" (click)="presentPopoverCourt($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedCourt.name}} </ion-label>
+              </ion-item>
+
+              <ion-popover #popoverِِCourt [isOpen]="isOpenCourt" (didDismiss)="didDissmisCourt()"> 
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl">
+                      <ion-item class="normalInput">
+                        <ion-input #popInput [(ngModel)]="searchTermCourt"></ion-input> 
+                      </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content dir="rtl">
+                    <ion-list class="ion-text-center" *ngIf="courtArr.length>0">
+                      <ion-item button lines="none" *ngFor="let log of courtArr | courtFilter : searchTermCourt" (click)="selectFromPopCourt(log)">
+                        <ion-grid>
+                          <ion-row class="ion-justify-content-center">
+                            <ion-col size="9">
+                              {{log.court_name}}
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-item>
+                    </ion-list>
+                    <ion-list class="ion-text-center" *ngIf="courtArr.length == 0">
+                      <ion-item lines="none" button (click)="presentCourtModal()">
+                        <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                        <ion-text color="dark"> إضافة محكمة جديدة </ion-text>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+            <!-- الخصم -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> إسم الخصم </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="newCase.opponent_name" placeholder=""></ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> رقم هوية الخصم </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="newCase.opponent_id" placeholder=""></ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> إسم ممثل الخصم </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="newCase.opponent_representative" placeholder=""></ion-input>
+              </ion-item>
+            </ion-col>
+
+            <ion-item-divider></ion-item-divider>
+
+
+            <ion-col size="4">
+              <ion-grid class="ion-no-padding">
+                <ion-row>
+                  <ion-col size="6" class="ion-text-start p10">
+                    <ion-label><strong> حالة القضية </strong></ion-label>
+                  </ion-col>
+                  <ion-col size="6" class="ion-text-end">
+                    <ion-button (click)="presentStatusModal()" size="small" fill="clear" color="primary">
+                      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                      <strong> اضافة حالة </strong>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <ion-item class="custInput" (click)="presentPopoverCase($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedCaseStatus.name}} </ion-label>
+              </ion-item>
+              <ion-popover #popoverCase [isOpen]="isOpenCase" (didDismiss)="didDissmisCase()">
+                <ng-template>
+                  <ion-content dir="rtl">
+                    <ion-list class="ion-text-center" *ngIf="caseStatusArr.length>0">
+                      <ion-item button lines="none" *ngFor="let log of caseStatusArr"
+                        (click)="selectFromPopCase(log)">
+                        <ion-grid>
+                          <ion-row class="ion-justify-content-center">
+                            <ion-col size="1">
+                              <div class="status-bullet" [ngStyle]="{'background-color': log.status_color}"></div>
+                            </ion-col> <ion-col size="8"> {{log.status_name}} </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-item>
+                    </ion-list>
+                    <ion-list class="ion-text-center" *ngIf="caseStatusArr.length == 0">
+                      <ion-item lines="none" button (click)="presentStatusModal()">
+                        <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                        <ion-text color="dark"> إضافة حالة جديدة </ion-text>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+            <!-- تاريخ فتح القضية  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>    تاريخ فتح القضية  </strong></ion-label>
+              
+              <ion-item class="custInput"> 
+                <ion-datetime-button datetime="datetime2"></ion-datetime-button> 
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime 
+                    [(ngModel)]="newCase.case_open_date" 
+                    presentation="date"  
+                    [locale]="locale"
+                    id="datetime2">
+                  </ion-datetime>
+                  </ng-template>
+               </ion-modal>
+            </ion-item>
+            </ion-col>
+            <!-- الموعد النهائي  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>      الموعد النهائي    </strong></ion-label> 
+              <ion-item class="custInput"> 
+                <ion-datetime-button datetime="datetime"></ion-datetime-button> 
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime 
+                      [(ngModel)]="newCase.deadline" 
+                      presentation="date"  
+                      [locale]="locale"
+                      id="datetime">
+                    </ion-datetime>
+                    </ng-template>
+                 </ion-modal>
+              </ion-item>
+            </ion-col>
+
+            <!-- فريق العمل  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> فريق العمل </strong></ion-label>
+              <ion-item class="custInput" (click)="presentPopoverCustType($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label *ngFor="let tm of selectedLawyersTeamArr">
+                  <ion-text>{{tm.full_name}}</ion-text>
+                </ion-label>
+              </ion-item>
+              <ion-popover #popoverِCustomer [isOpen]="isOpenCustType" (didDismiss)="didDissmisCustType()">
+                <ng-template>
+                  <ion-content dir="rtl">
+                    <ion-list class="ion-text-center" *ngIf="usersArr.length>0">
+                      <ion-item button dir="rtl" lines="none" *ngFor="let log of usersArr ; let i = index"
+                        (ionChange)="checkedTeam($event , log ,i)">
+                        <ion-label>{{log.full_name}} </ion-label>
+                        <ion-checkbox slot="start" [(ngModel)]="log.checked"> </ion-checkbox>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+            <!-- طلبات المدعي  -->
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> طلبات المدعي </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="newCase.Plaintiff_Requests" placeholder=" "></ion-input>
+              </ion-item>
+            </ion-col>
+            
+          </ion-row>
+     
+
+
+  <ion-row>
+           
+             
+    <ion-grid>
+      <ion-row>
+        <!-- <ion-col size="4" class="ion-margin-top">
+          <ion-label class="ion-padding" ><strong> رقم القيد ناجز</strong></ion-label>
+          <ion-item class="custInput"> 
+            <ion-input [(ngModel)]="newCase.constraintId_najz" placeholder="" ></ion-input>
+          </ion-item>
+        </ion-col> -->
+       
+        <!-- <ion-col size="4" class="ion-margin-top">
+          <ion-label class="ion-padding" ><strong> رقم القضية بالأرشيف</strong></ion-label>
+          <ion-item class="custInput"> 
+            <ion-input [(ngModel)]="newCase.archive_id_najz" placeholder="" ></ion-input>
+          </ion-item>
+        </ion-col> -->
+       
+        <!-- <ion-col size="4" class="ion-margin-top">
+          <ion-label class="ion-padding"><strong>    تاريخ  الدعوة في ناجز </strong></ion-label>
+          <ion-item class="custInput"> 
+            <ion-datetime-button datetime="datetime3"></ion-datetime-button>
+
+          </ion-item>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime [(ngModel)]="newCase.case_open_date_najz" presentation="date"  id="datetime3"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-col> -->
+        
+        <!-- <ion-col size="4" class="ion-margin-top">
+          <ion-label class="ion-padding"><strong> تصنيف القضية </strong></ion-label>
+          <ion-item class="custInput"  (click)="presentPopoverCategNagz($event)" >  
+            <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+            <ion-label> {{selectedCategNagz.name}}     </ion-label>
+          </ion-item>
+          <ion-popover  #popoverCategNagz [isOpen]="isOpenCategNagz" (didDismiss)="didDissmisCategNagz()">
+            <ng-template>
+              <ion-content  dir="rtl">  
+                <ion-list class="ion-text-center"  *ngIf="caseCategArrNagz.length>0">
+                 <ion-item button lines="none" *ngFor="let log of caseCategArrNagz" (click)="selectFromPopCategNagz(log)">
+                 <ion-grid>
+                   <ion-row class="ion-justify-content-center">
+                     <ion-col size="9"> 
+                         {{log.name}}    
+                     </ion-col> 
+                   </ion-row>
+                 </ion-grid>
+               </ion-item> 
+                </ion-list> 
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ion-col> -->
+
+
+        <!-- <ion-col size="4" class="ion-margin-top">
+          <ion-label class="ion-padding"><strong> نوع القضية </strong></ion-label>
+          <ion-item class="custInput"  (click)="presentPopoverCaseNagz($event)" >  
+            <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+            <ion-label> {{selectedCaseNagz.name}}     </ion-label>
+          </ion-item>
+          <ion-popover  #popoverCaseNagz [isOpen]="isOpenCaseNagz" (didDismiss)="didDissmisCaseNagz()">
+            <ng-template>
+              <ion-content  dir="rtl">  
+                <ion-list class="ion-text-center"  *ngIf="caseTypeArrNagz.length>0">
+                 <ion-item button lines="none" *ngFor="let log of caseTypeArrNagz" (click)="selectFromPopCaseNagz(log)">
+                 <ion-grid >
+                   <ion-row class="ion-justify-content-center">
+                     <ion-col size="9"> 
+                         {{log.name}}    
+                     </ion-col> 
+                   </ion-row>
+                 </ion-grid>
+               </ion-item> 
+                </ion-list> 
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ion-col> -->
+
+        <!-- <ion-col size="4" class="ion-margin-top">
+       <ion-label class="ion-padding"><strong> إرسال تقرير </strong></ion-label>
+         <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none" dir="rtl">
+                <ion-label> رسالة نصية SMS </ion-label>  
+                <ion-checkbox  slot="start"> </ion-checkbox>
+              </ion-item>
+            </ion-col>
+
+            <ion-col>
+              <ion-item lines="none" dir="rtl">
+              <ion-label> البريد  </ion-label> 
+                <ion-checkbox slot="start"> </ion-checkbox>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+         </ion-grid>
+        </ion-col> -->
+        <ion-item-divider></ion-item-divider>
+        <ion-col size="12" class="ion-margin-top">
+          <ion-label class="ion-padding"><strong> موضوع الدعوة </strong></ion-label>
+          <ion-item class="custInput"> 
+              <ion-textarea [(ngModel)]="newCase.case_subject" placeholder="Type something here" [autoGrow]="true">
+
+              </ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+     </ion-row>
+    <!-- </form> -->
+        </ion-grid>
+       
+      </ion-card-content>
+
+      <ion-card-header class="listHed">
+        <ion-button   fill="outline" (click)="saveBasics()"  color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> حفــظ   </ion-text>     
+        </ion-button> 
+      </ion-card-header>
+    </ion-card>
+  </ion-row>
+
+  
+
+  <!-- sesions  -->
+  <ion-row  *ngIf="segVal == 'sessions'">
+    <app-sessions [caseFromParnt] = "newCase"  style="width: 100%;"></app-sessions>
+  </ion-row>
+
+   <!-- files -->
+   <ion-row  *ngIf="segVal == 'files'">
+       <app-files [objectFromParnt] = "newCase" [categoryFromParnt]="'case'"   style="width: 100%;"></app-files>  
+   </ion-row>
+
+  </ion-grid>
+
+</ion-content>

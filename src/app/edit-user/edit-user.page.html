@@ -1,0 +1,117 @@
+<ion-header class="ion-no-border borderBottomNone"> 
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+    <ion-title class="fontLarge">   تعديل المستخدم </ion-title> 
+     <ion-buttons slot="end" class="ion-margin-end" (click)="close()"> 
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-card class="w100">
+      <ion-card-content>
+        <ion-grid >
+          <form [formGroup]="ionicForm" (ngSubmit)="save()" novalidate> 
+          <ion-row>
+          
+          </ion-row>
+
+          <ion-row *ngIf="USER_INFO">  
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> مستوي المستخدم </strong></ion-label>
+              <ion-item class="custInput"  (click)="presentPopoverCustType($event)">  
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                <ion-label> {{selectedUserType.name}}     </ion-label>
+              </ion-item>
+              <ion-popover  #popoverNotif [isOpen]="isOpenCustType" (didDismiss)="didDissmisCustType()" >
+                <ng-template>
+                  <ion-content  dir="rtl">  
+                    <ion-list class="ion-text-center"  *ngIf="userTypeArr.length>0">
+                     <ion-item button lines="none" *ngFor="let log of userTypeArr" (click)="selectFromPopTypes(log)" [disabled]="this.USER_INFO.level!=2" >
+                     <ion-grid>
+                       <ion-row class="ion-justify-content-center">
+                         <ion-col size="9"> 
+                             {{log.name}}    
+                         </ion-col>
+                         <!-- <ion-col size="3">
+                           <ion-text color = "primary">{{log.datee | dateAgo}}</ion-text>
+                         </ion-col> -->
+                       </ion-row>
+                     </ion-grid>
+                   </ion-item> 
+                    </ion-list> 
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding" ><strong>  الإسم الكامل  </strong></ion-label>
+              <ion-item class="custInput"> 
+                 <ion-input placeholder="" formControlName="full_name"  [(ngModel)]="seledctedUser.full_name"></ion-input>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.full_name.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>   المسمي الوظيفي </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="job_title"  [(ngModel)]="seledctedUser.job_title"></ion-input> 
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.job_title.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> اسم المستخدم  </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="user_name" [(ngModel)]="seledctedUser.user_name"></ion-input>
+                <ion-note *ngIf="isSubmitted == true && errorControl.user_name.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>     البريد </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="email"  [(ngModel)]="seledctedUser.email"></ion-input>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.email.errors?.required"> الحقل مطلوب</ion-note>
+                 <ion-note  *ngIf="isSubmitted == true && errorControl.email.errors?.pattern"> خطأ في صيغة البريد </ion-note>
+              </ion-item>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> رقم الهاتف   </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-input placeholder="" formControlName="phone" [(ngModel)]="seledctedUser.phone"></ion-input>
+                <ion-note  *ngIf="isSubmitted == true && errorControl.phone.errors?.required"> الحقل مطلوب</ion-note>
+              </ion-item>
+            </ion-col>
+
+          </ion-row>
+
+
+
+          </form>
+        </ion-grid> 
+      </ion-card-content>
+      <ion-card-header class="listHed" >
+      <ion-grid>
+        <ion-row class="">
+          <ion-col size="4" >
+            <ion-button size="small"     fill="outline" (click)="save()"  color="medium" class="custButton rad10">
+              <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+                 <ion-text color="dark"> حفــظ   </ion-text>     
+            </ion-button> 
+          </ion-col>
+        </ion-row>
+      </ion-grid> 
+      </ion-card-header>
+    </ion-card>
+  </ion-row>
+</ion-content>

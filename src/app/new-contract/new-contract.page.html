@@ -1,0 +1,684 @@
+<ion-header>
+  <ion-toolbar translucent dir="rtl"  class="toolPadding">
+    <ion-title class="fontLarge">عقد جديد   </ion-title> 
+     <ion-buttons slot="end" class="ion-margin-end" (click)="close()"> 
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-margin-top"> 
+<ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+  <ion-row class="ion-margin-top">
+    <ion-col size="12">
+   
+    </ion-col> 
+  </ion-row>
+
+  
+  <ion-row>
+    <ion-segment dir="rtl" (ionChange)="segmentCHange($event)" [(ngModel)]="segVal" class="ion-margin-top">
+      <ion-segment-button value="basics">
+        <ion-label class="segLable">البيانات الأساسية</ion-label>
+      </ion-segment-button> 
+      <!-- <ion-segment-button value="payments">
+        <ion-label class="segLable"> الدفعات المالية  </ion-label>
+      </ion-segment-button> -->
+      <ion-segment-button [disabled]="savedDone == false" value="services">
+        <ion-label class="segLable">الخدمات القانونية   </ion-label>
+      </ion-segment-button> 
+      <ion-segment-button [disabled]="savedDone == false" value="files"> 
+        <ion-label class="segLable">الملفات المرفقة </ion-label>
+      </ion-segment-button>
+      <!-- <ion-segment-button value="context">
+        <ion-label class="segLable">مسودة العقد     </ion-label>
+      </ion-segment-button> -->
+    </ion-segment>
+  </ion-row>
+ 
+
+  <ion-row   *ngIf="segVal == 'basics'">
+    <ion-card class="w100">
+      <ion-card-content> 
+        <ion-grid>
+        <!-- <form [formGroup]="ionicForm" (ngSubmit)="saveBasics()" novalidate> -->
+          <ion-row>
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding" ><strong> عنوان العقد </strong>   </ion-label>
+              <ion-note style="float:left" color="danger" *ngIf="isSubmitted == true && newContract.contract_title == '' "> الحقل مطلوب</ion-note>
+              <ion-item class="custInput"> 
+                <ion-input [(ngModel)] = "newContract.contract_title"  placeholder="عنوان العقد" ></ion-input>
+              </ion-item>
+            </ion-col>
+
+           
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>    تاريخ التعاقد  </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-datetime-button   datetime="datetime"></ion-datetime-button>
+              </ion-item>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime  presentation="date" id="datetime"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong>   تاريخ انتهاء العقد  </strong></ion-label>
+              <ion-item class="custInput"> 
+                <ion-datetime-button   datetime="datetime3"></ion-datetime-button>
+              </ion-item>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime  presentation="date" id="datetime3"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-col>
+
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> العميل </strong></ion-label>
+               <!-- <ion-note style="float:left" > الحقل مطلوب</ion-note>   -->
+              <ion-item class="custInput" (click)="presentPopover($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                <ion-label> {{selectedCustomer.cust_name}}     </ion-label>
+                <!-- <ion-button fill="clear" (click)="refresh('item')" slot="end">
+                  <ion-icon name="refresh" color="success"></ion-icon>
+                </ion-button> -->
+              </ion-item>
+              <ion-popover  #popover [isOpen]="isOpen" (didDismiss)="didDissmis()">
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl">
+                      <ion-item class="normalInput ">
+                        <ion-input #popInput [(ngModel)] ="searchTerm" (ionChange)="searchItem($event)"></ion-input>
+                        <!-- <ion-button fill="clear" (click)="clear()" slot="end">
+                          <ion-icon name="close" color="danger"></ion-icon>
+                        </ion-button>   -->
+                       </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content class="ion-padding" dir="rtl"> 
+                    <!-- spinner -->
+                    <ion-list class="ion-text-center"  *ngIf="searchResult.length==0 && searchTerm =='' ">
+                      <ion-label>
+                        <ion-spinner name="lines-sharp"></ion-spinner>
+                      </ion-label> 
+                    </ion-list>
+                     <ion-list *ngIf="searchResult.length>0">
+                      <ion-item lines="none" button *ngFor="let item of searchResult" (click)="selectFromPop(item)">
+                        {{item.cust_name}} 
+                      </ion-item>
+                    </ion-list> 
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col>
+
+          
+         </ion-row> 
+         <ion-item-divider></ion-item-divider>
+         <ion-row>
+          <ion-col size="12" class="ion-margin-top">
+            <ion-radio-group (ionChange) = "paymentWayChange($event)"  [(ngModel)]="newContract.payment_values" dir="rtl">
+            <ion-label class="ion-padding"><strong>   قيمة العقد المالية  </strong></ion-label>
+              <ion-grid class="ion-no-padding">
+               <ion-row class="custInput">
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                     <ion-label> مبلغ ثابت معلوم</ion-label>  
+                     <ion-radio  slot="start" value="1"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+
+                 <ion-col class="ion-no-padding">
+                  <ion-item lines="none" dir="rtl">
+                    <ion-label> مبلغ ثابت غير معلوم</ion-label>  
+                    <ion-radio  slot="start" value="2"> </ion-radio>
+                  </ion-item>
+                </ion-col>
+     
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                   <ion-label> نسبة معلومة</ion-label> 
+                     <ion-radio slot="start" value="3"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+
+                 <ion-col class="ion-no-padding">
+                  <ion-item lines="none" dir="rtl">
+                  <ion-label> نسبة غير معلومة</ion-label> 
+                    <ion-radio slot="start" value="4"> </ion-radio>
+                  </ion-item>
+                </ion-col>
+
+               </ion-row>
+              </ion-grid>
+            </ion-radio-group>
+          </ion-col>
+ 
+
+
+          <ion-col size="4" class="ion-margin-top" *ngIf="+newContract.payment_values == 1 ">
+            <ion-label class="ion-padding" ><strong>   المبلغ </strong>   </ion-label>
+            <ion-note style="float:left" color="danger" *ngIf="isSubmitted == true && newContract.amount == 0 "> الحقل مطلوب</ion-note>
+            <ion-item class="custInput"> 
+              <ion-input [(ngModel)]="newContract.amount"  placeholder="" ></ion-input>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="4" class="ion-margin-top"  *ngIf="+newContract.payment_values == 3 "> 
+            <ion-label class="ion-padding" ><strong>   النسبة </strong>   </ion-label>
+            <ion-note style="float:left" color="danger" *ngIf="isSubmitted == true && newContract.amount == 0 "> الحقل مطلوب</ion-note>
+            <ion-item class="custInput"> 
+              <ion-input [(ngModel)]="newContract.amount"  placeholder="" ></ion-input>
+            </ion-item>
+          </ion-col>
+
+
+
+          <ion-col size="4" class="ion-margin-top"  *ngIf="+newContract.payment_values == 1 || +newContract.payment_values == 3 ">
+            <ion-radio-group (ionChange)="paymentMethodChange($event)"  [(ngModel)]="newContract.payment_method" dir="rtl">
+            <ion-label class="ion-padding"><strong>  طريقة الدفع  </strong></ion-label>
+              <ion-grid class="ion-no-padding">
+               <ion-row class="custInput">
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                     <ion-label> مقدم </ion-label>  
+                     <ion-radio  slot="start" value="1"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+     
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                   <ion-label> مؤخر  </ion-label> 
+                     <ion-radio slot="start"  value="2"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+               </ion-row>
+              </ion-grid>
+            </ion-radio-group>
+          </ion-col>
+
+          <ion-col size="4" class="ion-margin-top"  *ngIf="+newContract.payment_values == 1 || +newContract.payment_values == 3 ">
+            <ion-radio-group  (ionChange)="paymentSystemChange($event)"    [(ngModel)]="newContract.payment_system" dir="rtl">
+            <ion-label class="ion-padding"><strong>  نظام الدفع  </strong></ion-label>
+              <ion-grid class="ion-no-padding">
+               <ion-row class="custInput">
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                     <ion-label> دفعة واحدة </ion-label>  
+                     <ion-radio  slot="start"  value="1"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+                 <ion-col class="ion-no-padding">
+                   <ion-item lines="none" dir="rtl">
+                   <ion-label> دفعات متعددة  </ion-label> 
+                     <ion-radio slot="start"  value="2"> </ion-radio>
+                   </ion-item>
+                 </ion-col>
+               </ion-row>
+              </ion-grid>
+            </ion-radio-group>
+          </ion-col>
+        </ion-row>
+
+        <ion-item-divider class="ion-margin-top"></ion-item-divider>
+
+        <ion-row *ngIf="(+newContract.payment_values == 1 || +newContract.payment_values == 3 ) && +newContract.payment_system == 2"> 
+          <ion-col size="8" class="ion-margin-top">
+            <ion-label class="ion-margin-start">
+              <strong>  إضافة دفعة مالية   </strong> 
+            </ion-label>
+
+            <ion-row class="ion-margin-top">
+              <ion-col size="4"> 
+                <ion-label class="ion-padding"><strong>   المبلغ    </strong></ion-label> 
+              <ion-item class="custInput"> 
+                <ion-input [(ngModel)]="amount"  placeholder="المبلغ" ></ion-input>
+              </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <ion-label class="ion-padding"><strong>   تاريخ الإستحقاق     </strong></ion-label>  
+                <ion-item class="custInput"> 
+                  <ion-datetime-button    datetime="datetime"></ion-datetime-button>
+                </ion-item>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime [(ngModel)]="payDate" presentation="date" id="datetime"></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-button fill="outline" color="primary" (click)="addToList()">
+                  <ion-icon name="add" color="primary"></ion-icon>
+                  <ion-label>إضافة دفعة</ion-label>
+                </ion-button> 
+               </ion-col>
+            </ion-row>
+          </ion-col>
+
+          <ion-col size="8" class="ion-margin-top">
+            <ion-label class="ion-margin-start">
+              <strong>       قائمة الدفعات المالية   </strong> 
+            </ion-label>
+            <ion-card>
+              <ion-card-content> 
+                <ion-grid> 
+                  <ion-row>
+                    <ion-col>
+                      <table  class="table" >
+                        <tr>
+                          <th>
+                            التسلسل
+                          </th> 
+                          <th>  المبلغ
+                          </th> 
+                          <th>  تاريخ الإستحقاق 
+                          </th> 
+                          <th><strong>حذف</strong>  </th>  
+                        </tr> 
+                        <tr *ngFor="let case of paymentsArr ; let i = index">
+                        <td>
+                          <ion-text> {{i+1}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text>{{case.amount}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text> {{case.payDaten | date : 'dd'}}    </ion-text>
+                        </td>   
+                        <td>
+                          <ion-button fill="clear" (click)="delete(case)"><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                        </td>  
+                       </tr> 
+                      </table>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>  
+              </ion-card-content>
+             
+            </ion-card>
+          </ion-col> 
+
+         </ion-row>
+
+        <ion-item-divider class="ion-margin-top"></ion-item-divider>
+
+          <ion-row> 
+          <ion-col size="12" class="ion-margin-top">
+            <ion-label class="ion-padding"><strong>   مسودة العقد </strong></ion-label>
+            <ion-item class="custInput"> 
+                <ion-textarea   placeholder="Type something here" [autoGrow]="true">
+  
+                </ion-textarea>
+            </ion-item>
+          </ion-col> 
+         </ion-row>  
+       
+        </ion-grid> 
+      </ion-card-content>
+      <ion-item-divider></ion-item-divider>
+
+      <ion-card-header    class="listHed">
+        <ion-button (click)="nextBasics()"  fill="outline"   color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> حفظ ومتابعة   </ion-text>     
+        </ion-button> 
+      </ion-card-header>
+    </ion-card>
+  </ion-row>
+
+  <!-- <ion-row *ngIf="segVal == 'payments'">
+    <ion-card class="w100">
+      <ion-card-content> 
+        <ion-grid>
+       
+          <ion-row> 
+          <ion-col size="8" class="ion-margin-top">
+            <ion-label class="ion-margin-start">
+              <strong>  إضافة دفعة مالية   </strong> 
+            </ion-label>
+
+            <ion-row class="ion-margin-top">
+              <ion-col size="4"> 
+                <ion-label class="ion-padding"><strong>   المبلغ    </strong></ion-label> 
+              <ion-item class="custInput"> 
+                <ion-input [(ngModel)]="amount"  placeholder="المبلغ" ></ion-input>
+              </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <ion-label class="ion-padding"><strong>   تاريخ الإستحقاق     </strong></ion-label>  
+                <ion-item class="custInput"> 
+                  <ion-datetime-button    datetime="datetime"></ion-datetime-button>
+                </ion-item>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime [(ngModel)]="payDate" presentation="date" id="datetime"></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </ion-col>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-button fill="outline" color="primary" (click)="addToList()">
+                  <ion-icon name="add" color="primary"></ion-icon>
+                  <ion-label>إضافة دفعة</ion-label>
+                </ion-button> 
+               </ion-col>
+            </ion-row>
+          </ion-col>
+
+          <ion-col size="8" class="ion-margin-top">
+            <ion-label class="ion-margin-start">
+              <strong>       قائمة الدفعات المالية   </strong> 
+            </ion-label>
+            <ion-card>
+              <ion-card-content> 
+                <ion-grid> 
+                  <ion-row>
+                    <ion-col>
+                      <table  class="table" >
+                        <tr>
+                          <th>
+                            التسلسل
+                          </th> 
+                          <th>  المبلغ
+                          </th> 
+                          <th>  تاريخ الإستحقاق 
+                          </th> 
+                          <th><strong>حذف</strong>  </th>  
+                        </tr> 
+                        <tr *ngFor="let case of paymentsArr ; let i = index">
+                        <td>
+                          <ion-text> {{i+1}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text>{{case.amount}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text> {{case.payDaten | date : 'dd'}}    </ion-text>
+                        </td>   
+                        <td>
+                          <ion-button fill="clear" (click)="delete(case)"><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                        </td>  
+                       </tr> 
+                      </table>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>  
+              </ion-card-content>
+             
+            </ion-card>
+          </ion-col> 
+
+         </ion-row>  
+        </ion-grid> 
+      </ion-card-content>
+      <ion-card-header dir="ltr"  class="listHed">
+        <ion-button (click)="nextPayment()"  fill="outline"   color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark"> حفظ ومتابعة   </ion-text>     
+        </ion-button> 
+      </ion-card-header>
+    </ion-card>
+  </ion-row> -->
+
+  <ion-row *ngIf="segVal == 'services'">
+    <app-contract-services class="w100"></app-contract-services>
+    <!-- <ion-card class="w100">
+      <ion-card-content> 
+        <ion-grid>
+            <ion-row>
+              <ion-col size="8" class="ion-margin-top">
+                <ion-radio-group  value="case" [(ngModel)]="serviceType" (ionChange)="serviceCange($event)" dir="rtl">
+                <ion-label class="ion-padding"><strong>  نوع الخدمة  </strong></ion-label>
+                  <ion-grid class="ion-no-padding">
+                  <ion-row class="custInput">
+                    <ion-col class="ion-no-padding">
+                      <ion-item lines="none" dir="rtl">
+                        <ion-label> قضايا </ion-label>  
+                        <ion-radio value="case"  slot="start"> </ion-radio>
+                      </ion-item>
+                    </ion-col>
+        
+                    <ion-col class="ion-no-padding">
+                      <ion-item lines="none" dir="rtl">
+                      <ion-label> استشارات  </ion-label> 
+                        <ion-radio value="consultation" slot="start"> </ion-radio>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col class="ion-no-padding">
+                      <ion-item lines="none" dir="rtl">
+                        <ion-label> صياغة عقود  </ion-label> 
+                        <ion-radio value="contract" slot="start"> </ion-radio>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  </ion-grid>
+                </ion-radio-group>
+              </ion-col>
+            
+              <ion-col size="6"   *ngIf="serviceType == 'case'">
+                <ion-label class="ion-padding"><strong> اختر القضية  </strong></ion-label>
+                <ion-item class="custInput" (click)="presentPopoverCase($event)">
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label> {{selectedService.title}}     </ion-label>
+                  
+                </ion-item>
+                <ion-popover  #popoverCase [isOpen]="isOpenCase" (didDismiss)="didDissmisCase()">
+                  <ng-template>
+                    <ion-header>
+                    </ion-header>
+                    <ion-content class="ion-padding" dir="rtl"> 
+                    
+                      <ion-list class="ion-text-center"  *ngIf="loadingCase == true ">
+                        <ion-label>
+                          <ion-spinner name="lines-sharp"></ion-spinner>
+                        </ion-label> 
+                      </ion-list>
+                       <ion-list *ngIf="CasesArray.length > 0 ">
+                        <ion-item button *ngFor="let item of CasesArray" (click)="selectFromPopCase(item)">
+                          {{item.case_title }}  -    <strong > {{item.client_name }} </strong>
+                        </ion-item>
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+
+              <ion-col size="6"   *ngIf="serviceType == 'consultation'"> 
+                <ion-label class="ion-padding"><strong> اخترالإستشارة  </strong></ion-label> 
+                <ion-item class="custInput" (click)="presentPopoverConsult($event)">
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label> {{selectedService.title}}     </ion-label>
+                  
+                </ion-item>
+                <ion-popover  #popoverConsult [isOpen]="isOpenConsult" (didDismiss)="didDissmisConsult()">
+                  <ng-template>
+                    <ion-header>
+                    </ion-header>
+                    <ion-content class="ion-padding" dir="rtl"> 
+                      
+                      <ion-list class="ion-text-center"  *ngIf="loadingConsult == true ">
+                        <ion-label>
+                          <ion-spinner name="lines-sharp"></ion-spinner>
+                        </ion-label> 
+                      </ion-list>
+                       <ion-list *ngIf="consultationsArray.length > 0 ">
+                        <ion-item button *ngFor="let item of consultationsArray" (click)="selectFromPopConsult(item)">
+                          {{item.title }}  -    <strong > {{item.customer }} </strong>
+                        </ion-item>
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+
+              <ion-col size="4" >
+                <ion-button class="ion-margin-top" fill="outline" color="primary" (click)="addToListService()">
+                  <ion-icon name="add" color="primary"></ion-icon>
+                  <ion-label>إضافة خدمة</ion-label>
+                </ion-button> 
+              </ion-col>
+
+            <ion-col size="8" class="ion-margin-top">
+               <ion-label class="ion-margin-start">
+               <strong>   قائمة الخدمات   </strong> 
+               </ion-label>
+              <ion-card> 
+                <ion-card-content>
+                <ion-grid>  
+                  <ion-row>
+                    <ion-col>
+                      <table  class="table" >
+                        <tr>
+                          <th>
+                            التسلسل
+                          </th>  
+                          <th>  عنوان الخدمة
+                          </th> 
+                          <th>  نوع الخدمة
+                          </th>
+                          <th><strong>حذف</strong>  </th>  
+                        </tr> 
+                        <tr *ngFor="let serv of servicesArr ; let i = index">
+                        <td>
+                          <ion-text> {{i+1}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text  >{{serv.title}} </ion-text> 
+                        </td>
+                        <td>
+                          <ion-text *ngIf="serv.type == 'case'" >قضايا  </ion-text> 
+                          <ion-text *ngIf="serv.type == 'consultation'" >استشارات  </ion-text> 
+                          <ion-text *ngIf="serv.type == 'contract'" >صياغة عقود</ion-text> 
+                        </td>
+                        <td>
+                          <ion-button fill="clear" (click)="deleteService(serv)"><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                        </td>  
+                       </tr> 
+                      </table>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid> 
+              </ion-card-content> 
+              </ion-card>
+            </ion-col>
+
+          </ion-row>  
+          </ion-grid> 
+      </ion-card-content>
+      
+    </ion-card> -->
+  </ion-row>
+
+  <ion-row *ngIf="segVal == 'files'"> 
+    <app-contract-files class="w100"></app-contract-files>
+    <!-- <ion-card class="w100">
+      <ion-card-content>
+        <ion-grid> 
+          <ion-row>
+             <ion-col size="4"> 
+                <ion-label class="ion-padding"><strong>الملف</strong></ion-label>
+                <ion-item class="custInput">
+                    <input type="file" (change)="fileChange($event)">
+                </ion-item> 
+             </ion-col>
+            
+              <ion-col size="4">
+                <ion-label class="ion-padding"><strong>وصف الملف</strong></ion-label>
+                <ion-item class="custInput">
+                  <ion-input [(ngModel)]="newContractFile.file_notes" placeholder="وصف االملف"  ></ion-input>
+                </ion-item>
+              </ion-col>
+
+              <ion-col size="4"  class="ion-margin-top">
+                <ion-button class="ion-margin-top" fill="outline" color="primary" (click)="addToListFiles()">
+                  <ion-icon name="add" color="primary"></ion-icon>
+                  <ion-label>إضافة ملف</ion-label>
+                </ion-button> 
+              </ion-col>
+
+              <ion-col size="10" class="ion-margin-top">
+                <ion-label class="ion-margin-start">
+                <strong>   قائمة الملفات   </strong> 
+                </ion-label>
+              
+              
+               <ion-card> 
+                 <ion-card-content>
+                 <ion-grid> 
+                    
+                   <ion-row>
+                     <ion-col>
+                       <table  class="table" >
+                         <tr>
+                           <th>
+                             التسلسل
+                           </th>  
+                           <th>  اسم الملف  
+                           </th>
+                           <th> وصف الملف  
+                          </th> 
+                           <th><strong>حذف</strong>  </th>  
+                         </tr>
+
+                         <tr *ngFor="let file of filesArr ; let i = index">
+                         <td>
+                           <ion-text> {{i+1}} </ion-text> 
+                         </td>
+                         <td>
+                           <ion-text>{{file.file_name}} </ion-text> 
+                         </td>
+                         <td>
+                          <ion-text>{{file.fileNote}} </ion-text> 
+                         </td>
+                         
+                         <td>
+                           <ion-button fill="clear" (click)="deleteFile(file)"><ion-icon name="trash-outline" color="danger" ></ion-icon></ion-button>
+                         </td>  
+                        </tr> 
+                       </table>
+                     </ion-col>
+                   </ion-row>
+                 </ion-grid> 
+               </ion-card-content> 
+               </ion-card>
+             </ion-col>
+ 
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-item-divider></ion-item-divider>
+      <ion-card-header  class="listHed">
+        <ion-button (click)="nextServices()"  fill="outline"   color="medium" class="custButton rad10"> 
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark">  حفظ    </ion-text>     
+        </ion-button> 
+      </ion-card-header>
+    
+    </ion-card> -->
+
+  </ion-row> 
+  </ion-grid>
+
+</ion-content>
+
+<!-- <ion-footer>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8" class="ion-text-center">
+        <ion-button   fill="outline"   color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark">  حفــظ   </ion-text>     
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer> -->

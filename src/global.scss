@@ -10,28 +10,229 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/core.css";
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+@import "~@ionic/angular/css/palettes/dark.system.css";
+@import 'swiper/css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+
+.custInputFile img {
+  width: 100px;
+  height: 100px;
+
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.custInputFile input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.custInputFile:hover {
+  background-color: #e8f5e9;
+  border-color: #45a049;
+}
+
+.borderBottomNone{
+  border-bottom: none !important;
+}
+
+.date-time-container {
+  display: flex;
+  gap: 1rem;
+    padding: 10px;
+}
+
+.notiifBadge{
+  position: absolute;
+    top: 4px;
+    
+}
+
+.fltLeft{
+  float: left !important;
+}
+
+.fltRight{
+  float: right;
+}
+
+.langContainer{
+  border: solid .5px #b3b3b3;
+    border-radius: 5px;
+}
+
+
+.toolBarCutom{
+  direction: rtl !important;
+}
+
+.langBtn{
+
+  &.active {
+    background-color: #378e4ffa;
+    color: white;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+}
+
+.native-date-picker,
+.native-time-picker {
+  padding: 8px;
+  border:none;
+  font-size: 16px;
+}
+
+.fleft{
+  float: left;
+ }
+
+.circleDev{
+  width: 50px;
+    height: 50px;
+    border-style: solid;
+    border-color: var(--ion-color-medium);
+    border-width: 1px;
+    border-radius: 50%;
+    padding-top: 7px;
+    margin: 7px;
+ };
+
+.cust_Toast{
+  font-size: larger;
+  color: white;
+  font-weight: bold;
+  width: 30rem;
+  text-align: center;
+  margin-left: 30%;
+}
+
+.icoCard {
+  font-size: 6rem;
+    padding-left: 5px;
+ }
+
+ .w100{
+  width: 100%;
+ }
+.toolPadding{
+  padding-top:5px !important;
+  padding-bottom:5px !important;
+}
+
+.header-md::after { 
+  background-image: none;
+
+}
+
+.p10{
+  padding: 10px;
+}
+.status-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  // margin-right: 8px;
+  // margin-left: 8px;
+}
+
+.red{
+  background-color: rgb(247, 58, 58);
+}
+.green{
+  background-color: rgb(11, 196, 11);
+}
+.yellow{
+  background-color: rgb(247, 247, 11);
+}
+.gray{
+  background-color: rgb(179, 179, 179);
+}
+  ion-checkbox  {
+  margin: 5px;
+ }
+
+.ico{
+  font-size:25px;
+  margin-left: 10px;
+}
+.custButton{
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+
+}
+
+.listHed{
+border-bottom-color: var(--ion-color-medium);
+border-bottom-style: solid;
+border-bottom-width: .5px;
+}
+
+.rad10{
+--border-radius: 10px;
+--border-width: 1px;
+}
+.custSearch{
+  --border-radius: 6px;
+}
+.segLable{
+font-size: larger;
+font-weight: bold;
+}
+.custInput{
+  border-style: solid;
+  border-width: .5px;
+  border-color: var(--ion-color-medium);
+  border-radius: 6px;
+  }
+  .normalInput{
+    border-style: solid;
+    border-width: .5px;
+    border-color: var(--ion-color-medium); 
+    margin:5px;
+    }
+.header-md{
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--ion-color-light-shade);
+}
+
+.table{
+  text-align: center;
+   width: 100%;
+ }
+tr{
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--ion-color-medium);
+  height: 50px;
+ }
+
+ tr:hover{
+  background-color: var(--ion-color-light);
+  cursor: pointer; 
+ }
+
+ td, th {  padding-bottom: 10px;padding-top: 10px; text-wrap: nowrap;text-align: center;padding: 4px; font-size: 16px;color: black;}
+ 

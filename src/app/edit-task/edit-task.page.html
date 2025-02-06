@@ -1,0 +1,173 @@
+<ion-header>
+  <ion-toolbar translucent dir="rtl" class="toolPadding">
+    <ion-title class="fontLarge" > <ion-text>  مهمة جديدة    </ion-text> </ion-title>
+    <ion-buttons slot="end" class="ion-margin-end" (click)="close()">
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline" class="ico"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-margin-top">
+  <ion-grid class="ion-margin-start ion-margin-bottom ion-margin-end">
+    <ion-row class="ion-margin-top"> 
+      <ion-col size="12">
+
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-segment dir="rtl" (ionChange)="segmentCHange($event)" [(ngModel)]="segVal" class="ion-margin-top">
+        <ion-segment-button value="basics">
+          <ion-label class="segLable">البيانات الأساسية</ion-label>
+        </ion-segment-button>
+        <!-- [disabled]="!this.newSession.id" -->
+        <ion-segment-button value="files"  [disabled]="!this.newTask.id">
+          <ion-label class="segLable">الملفات </ion-label>
+        </ion-segment-button> 
+      </ion-segment>
+    </ion-row>
+
+    <ion-row *ngIf="segVal == 'basics'">
+      <ion-card class="w100">
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>عنوان المهمة</strong></ion-label>
+                <ion-note style="float:left" *ngIf="isSubmitted == true && newTask.title == '' "> الحقل مطلوب</ion-note> 
+                <ion-item class="custInput">
+                  <ion-input [(ngModel)]="newTask.title" placeholder="عنوان المهمة"></ion-input>
+                </ion-item>
+              </ion-col>
+
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> فريق العمل   </strong></ion-label>
+                <ion-item class="custInput"  (click)="presentPopoverCustType($event)">  
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label *ngFor="let tm of selectedLawyersTeamArr"> 
+                    <ion-text >{{tm.full_name}}</ion-text>
+                  </ion-label>  
+                </ion-item>
+                <ion-popover  #popoverِCustomer [isOpen]="isOpenCustType" (didDismiss)="didDissmisCustType()">
+                  <ng-template>
+                    <ion-content  dir="rtl">  
+                      <ion-list class="ion-text-center"  *ngIf="usersArr.length>0">
+                         <ion-item button dir="rtl" lines="none" *ngFor="let log of usersArr ; let i = index"  (ionChange)="checkedTeam($event , log ,i)" >
+                           <ion-label>{{log.full_name}} </ion-label>
+                          <ion-checkbox  slot="start" [(ngModel)]="log.checked" > </ion-checkbox>
+                         </ion-item> 
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>تاريخ المهمة</strong></ion-label>
+                <ion-item class="custInput">  
+                <ion-datetime-button datetime="datetime2"></ion-datetime-button> 
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime 
+                    [(ngModel)]="newTask.due_date" 
+                    presentation="date"  
+                    [locale]="locale"
+                    id="datetime2">
+                  </ion-datetime>
+                  </ng-template>
+                </ion-modal>  
+                </ion-item>
+                <!-- <ion-item class="custInput"> 
+                  <ion-datetime-button  datetime="date"></ion-datetime-button>
+                </ion-item>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime [(ngModel)]="newTask.due_date" presentation="date" id="date"></ion-datetime>
+                  </ng-template>
+                </ion-modal>  -->
+
+              </ion-col>
+
+            
+
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> الأهمية  </strong></ion-label>
+                <ion-note style="float:left" *ngIf="isSubmitted == true && newTask.category == '' "> الحقل مطلوب</ion-note>
+                <ion-item class="custInput"  (click)="presentPopoverNotif($event)" >  
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label> {{selectedType.name}} </ion-label>
+                </ion-item>
+                <ion-popover  #popoverNotif [isOpen]="isOpenNotif" (didDismiss)="didDissmisNotif()">
+                  <ng-template>
+                    <ion-content  dir="rtl">  
+                      <ion-list class="ion-text-center"  *ngIf="caseTypeArr.length>0">
+                       <ion-item button lines="none" *ngFor="let log of caseTypeArr" (click)="selectFromPopTypes(log)">
+                       <ion-grid>
+                         <ion-row class="ion-justify-content-center">
+                           <ion-col size="9"> 
+                               {{log.name}}    
+                           </ion-col>
+                            
+                         </ion-row>
+                       </ion-grid>
+                     </ion-item> 
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+  
+
+              <ion-col size="4" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong> حالة المهمة </strong></ion-label>
+                <ion-item class="custInput"  (click)="presentPopoverCase($event)" >  
+                  <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon> 
+                  <ion-label> {{selectedCaseStatus.name}}     </ion-label>
+                </ion-item>
+                <ion-popover  #popoverCase [isOpen]="isOpenCase" (didDismiss)="didDissmisCase()">
+                  <ng-template>
+                    <ion-content  dir="rtl">  
+                      <ion-list class="ion-text-center"  *ngIf="caseStatusArr.length>0">
+                       <ion-item button lines="none" *ngFor="let log of caseStatusArr" (click)="selectFromPopCase(log)">
+                       <ion-grid>
+                         <ion-row class="ion-justify-content-center">
+                           <ion-col size="9"> 
+                               {{log.name}}    
+                           </ion-col> 
+                         </ion-row>
+                       </ion-grid>
+                     </ion-item> 
+                      </ion-list> 
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-col>
+
+              <ion-col size="12" class="ion-margin-top">
+                <ion-label class="ion-padding"><strong>وصف المهمة</strong></ion-label>
+                <ion-item class="custInput">
+                  <ion-textarea [(ngModel)]="newTask.description" placeholder="  الوصف " [autoGrow]="true"></ion-textarea>
+                </ion-item>
+              </ion-col>  
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+
+        <ion-card-header class="listHed">
+          <ion-button  fill="outline" (click)="saveBasics()" color="medium" class="custButton rad10">
+            <ion-icon class="ico" color="dark" name="add-circle-outline"></ion-icon>
+            <ion-text color="dark">حفــظ ومتابعة</ion-text>
+          </ion-button>
+        
+        </ion-card-header>
+      </ion-card>
+    </ion-row>
+
+    <ion-row *ngIf="segVal == 'files'"> 
+      <app-files [categoryFromParnt]="category" [objectFromParnt]="newTask"  class="w100"></app-files>
+    </ion-row>
+  </ion-grid>
+</ion-content>

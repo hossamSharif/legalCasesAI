@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>إضافة حالة جديدة</ion-title>
+    <ion-buttons slot="end" class="ion-margin-end" (click)="close()"> 
+      <div class="circleDev">
+        <ion-button fill="clear">
+          <ion-icon name="close-outline"  class="ico" ></ion-icon>
+        </ion-button>  
+      </div>  
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8" class="ion-margin-top">
+        <ion-label class="ion-padding"><strong>  اسم الحالة  </strong></ion-label>
+        <ion-item class="custInput"> 
+            <ion-input  [(ngModel)]="caseStatus.status_name" placeholder="ادخل اسم الحالة "> 
+    
+            </ion-input>
+        </ion-item>
+      </ion-col> 
+    </ion-row>
+    <ion-row class="ion-justify-content-center"> <ion-col size="8" class="ion-margin-top"> <ion-label
+          class="ion-padding"><strong>اختر اللون</strong></ion-label>
+        <div class="color-selector">
+          <div *ngFor="let color of colors" [ngStyle]="{'background-color': color}" (click)="selectColor(color)"
+            [class.selected]="color === selectedColor" class="color-circle"></div>
+        </div>
+      </ion-col> 
+    </ion-row>
+  </ion-grid>
+</ion-content> 
+  <ion-footer>
+   <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8" class="ion-text-center">
+        <ion-button (click)="save()"  fill="outline"   color="medium" class="custButton rad10">
+          <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+             <ion-text color="dark">  حفــظ   </ion-text>     
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer> 
