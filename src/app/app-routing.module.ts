@@ -204,6 +204,30 @@ const routes: Routes = [
   {
     path: 'folder/settings',
     loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
+  },
+  {
+    path: 'examinations',
+    loadChildren: () => import('./examinations/examinations.module').then( m => m.ExaminationsPageModule)
+  },
+  {
+    path: 'new-examinations',
+    loadChildren: () => import('./new-examinations/new-examinations.module').then( m => m.NewExaminationsPageModule)
+  },
+  {
+    path: 'edit-examinations',
+    loadChildren: () => import('./edit-examinations/edit-examinations.module').then( m => m.EditExaminationsPageModule)
+  },
+  {
+    path: 'invoices',
+    loadChildren: () => import('./invoices/invoices.module').then( m => m.InvoicesPageModule)
+  },
+  {
+    path: 'new-invoice',
+    loadChildren: () => import('./new-invoice/new-invoice.module').then( m => m.NewInvoicePageModule)
+  },
+  {
+    path: 'print-modal',
+    loadChildren: () => import('./print-modal/print-modal.module').then( m => m.PrintModalPageModule)
   }
 
 ];

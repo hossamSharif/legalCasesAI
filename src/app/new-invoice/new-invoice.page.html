@@ -1,0 +1,323 @@
+ 
+<ion-content> 
+
+  <ion-grid>
+  <ion-row dir="rtl">
+    <ion-col size="12">
+      <ion-card>
+        <ion-grid> 
+          <ion-row>
+            <ion-col size="4" offset="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> العميل </strong></ion-label>
+              <ion-note style="float:left" *ngIf="isSubmitted == true && payInvo.cust_id == 0"> الحقل
+                مطلوب</ion-note>
+              <ion-item class="custInput" (click)="presentPopover($event)">
+                <ion-icon name="chevron-down" color="medium" slot="end"></ion-icon>
+                <ion-label> {{selectedCustomer?.cust_name}} </ion-label> 
+              </ion-item>
+              <ion-popover #popover [isOpen]="isOpen" (didDismiss)="didDissmis()">
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl">
+                      <ion-item class="normalInput">
+                        <ion-input  [(ngModel)]="searchTerm"></ion-input> 
+                      </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content class="ion-padding" dir="rtl">
+                    <!-- spinner -->
+                    <ion-list class="ion-text-center" *ngIf="costumerArr.length==0 && searchTerm =='' ">
+                      <ion-label>
+                        <ion-spinner name="lines-sharp"></ion-spinner>
+                      </ion-label>
+                    </ion-list>
+                    <ion-list *ngIf="costumerArr.length>0">
+                      <ion-item lines="none" button *ngFor="let item of costumerArr | customerFilter : searchTerm " (click)="selectFromPop2(item)">
+                        {{item.cust_name}}
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-col> 
+             
+            <ion-col size="4" class="ion-margin-top">
+              <ion-label class="ion-padding"><strong> تاريخ فتح القضية </strong></ion-label>  
+              <ion-item class="custInput"> 
+                  <ion-datetime-button datetime="datetime2"></ion-datetime-button> 
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime 
+                      [(ngModel)]="payInvo.pay_date" 
+                      presentation="date"  
+                      [locale]="locale"
+                      id="datetime2">
+                    </ion-datetime>
+                    </ng-template>
+                 </ion-modal>
+              </ion-item>
+            </ion-col> 
+          </ion-row>
+         </ion-grid> 
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid> 
+
+<ion-grid>
+  <ion-row dir="rtl">
+    <ion-col size="12" class="ion-no-padding">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card class="items-container2">
+              <ion-popover  #popoverNotif [isOpen]="isOpenNotif" (didDismiss)="didDissmisQtPop()">
+                <ng-template>
+                  <ion-header>
+                    <ion-toolbar dir="rtl" class="ion-text-center">
+                      <ion-item *ngIf="showMe == cellIndex" class="custInput">
+                        <ion-input style="text-align :center" (keyup.enter)= "editCellPop(cellIndex)" [(ngModel)]="itemList[cellIndex].quantity"
+                          (ionBlur)="editCell(cellIndex)"></ion-input>
+                      </ion-item>
+                    </ion-toolbar>
+                  </ion-header>
+                  <ion-content  dir="rtl">  
+                    <ion-list class="ion-text-center">
+                     <ion-item lines="none" button *ngFor="let qt of NumberArray" (click) = "editCellPop(cellIndex,qt)">
+                     <ion-grid >
+                       <ion-row>
+                         <ion-col size="9" class="ion-text-center"> 
+                           <ion-label><ion-text color="dark">  {{qt}}</ion-text> </ion-label>     
+                         </ion-col> 
+                       </ion-row>
+                     </ion-grid>
+                   </ion-item> 
+                    </ion-list> 
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+
+
+              <table class="table">
+                <tr>   
+                  <th>الخدمة</th>
+                  <th>العدد</th>
+                  <th>سعر الوحدة  </th>
+                  <th>الضريبة  </th>
+                  <th>الخصم </th>
+                  <th>المجموع</th>
+                  <th></th>
+                </tr>
+                <tr style="cursor: pointer;"> 
+                  <td style="width: 40%;"> 
+                    <ion-item class="ion-text-center" lines="none">
+                      <ion-textarea  [(ngModel)]="selectedItem.item_name" (keyup.enter)="addTolist()"  [autoGrow]="true"  placeholder=" اسم الخدمة و وصفها     "></ion-textarea>
+                    </ion-item>
+                  </td>
+                  <td>
+                    <ion-item class="ion-text-center" lines="none">
+                        <ion-input (ionChange)="pricehange($event)"  (keyup.enter)="addTolist()" type="number" [(ngModel)]="selectedItem.qty"></ion-input>
+                    </ion-item> 
+                  </td>
+                  <td>
+                    <ion-item class="ion-text-center" lines="none">
+                      <ion-input (ionChange)="pricehange($event)" (keyup.enter)="addTolist()" type="number"  [(ngModel)]="selectedItem.pay_price"></ion-input>
+                  </ion-item> 
+                  </td>
+                  <td>
+                    <ion-item class="ion-text-center" lines="none">
+                      <ion-input type="number" (ionChange)="pricehange($event)"  (keyup.enter)="addTolist()"  [(ngModel)]="selectedItem.tax"></ion-input>
+                  </ion-item> 
+                  </td>
+                   <td>
+                    <ion-item class="ion-text-center" lines="none"> 
+                      <ion-input type="number" (ionChange)="pricehange($event)" (keyup.enter)="addTolist()"  [(ngModel)]="selectedItem.discount"></ion-input>
+                  </ion-item> 
+                  </td>
+                  <td>
+                   <ion-item disabled="true" class="ion-text-center" lines="none">
+                      <ion-input  [(ngModel)]="selectedItem.tot"></ion-input>
+                  </ion-item> 
+                  </td>
+                  <td> 
+                    <ion-button fill="clear" size="small" (click)="addTolist()">
+                      <ion-icon name="add-circle-outline" color="primary"></ion-icon>
+                    </ion-button>
+                  </td>
+                </tr>
+                <tr *ngFor="let item of itemList ; let i = index" (click)="presentPopoverQtyPop($event , i)" style="cursor: pointer;">
+                  
+                  <td style=" max-width: 100px; overflow: hidden;white-space: normal;"> {{item.item_name}} </td>
+                  <td>
+                    <ion-text >{{item.quantity}}</ion-text>
+                    <!-- <ion-item *ngIf="showMe == i">
+                      <ion-input (keyup.enter)="editCell(i)" [(ngModel)]="item.quantity"
+                        (ionBlur)="editCell(i)"></ion-input>
+                    </ion-item> -->
+                  </td>
+                  <td>
+                    <ion-text >{{+item.pay_price }}</ion-text>
+                    <!-- <ion-item *ngIf="showMe == i">
+                      <ion-input (keyup.enter)="editCell(i)" [(ngModel)]="item.pay_price"
+                        (ionBlur)="editCell(i)"></ion-input>
+                    </ion-item> -->
+                  </td>
+                  <td>
+                    <ion-text >{{+item.tax}}  </ion-text>
+                  </td>
+                   <td>
+                    <ion-text >{{+item.discount}}</ion-text>
+                  </td>
+                  <td>{{+item.tot}}</td>
+                  <td>
+                    <ion-button fill="clear" size="small" (click)="deleteItem(i)">
+                      <ion-icon name="trash" color="danger"></ion-icon>
+                    </ion-button>
+                  </td>
+                </tr>
+
+                
+              </table> 
+            </ion-card>
+
+
+            <ion-card class="ion-margin-top">
+              <ion-grid>
+                <ion-row>
+                   <ion-col size="3" class="ion-margin-top">
+                    <ion-label><strong>صافي المبلغ  </strong> </ion-label> 
+                    <ion-label>  <ion-text>{{payInvo.tot_pr}} </ion-text></ion-label> 
+                  </ion-col> 
+                  <ion-col size="3" class="ion-margin-top">
+                    <ion-label ><strong>الخصــم </strong> 
+                       <ion-text>{{ payInvo.discountTot}} </ion-text></ion-label>
+                  </ion-col>
+                  <ion-col size="3"  class="ion-margin-top">
+                    <ion-label><strong>الضريبة </strong> </ion-label> 
+                    <ion-label>  <ion-text>{{payInvo.taxTot}} </ion-text></ion-label>
+                  </ion-col>
+                  <ion-col size="3"   class="ion-margin-top">
+                    <ion-label ><strong>  المجموع </strong></ion-label> 
+
+                    <ion-label><ion-text>{{taxAll}} </ion-text></ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card>
+          </ion-col>
+
+          <ion-card class="ion-margin-top w100"> 
+            <ion-grid>
+              <ion-row>
+                <ion-col size="6" dir="rtl">
+                      <ion-label ><strong>  طريقة الدفع </strong></ion-label>  
+                  </ion-col>
+          <ion-col size="6" dir="rtl"> 
+            <ion-radio-group [(ngModel)]="payInvo.pay_method" >
+              <ion-item  lines="none">
+               <ion-label class="radioLbl">نقدا</ion-label>
+               <ion-radio value="cash"></ion-radio>
+               <ion-label  class="radioLbl">بطاقة</ion-label>
+               <ion-radio value="card"></ion-radio>
+               </ion-item>
+           </ion-radio-group>
+          </ion-col>
+          </ion-row>
+          </ion-grid>
+          </ion-card>
+            <!-- totals -->
+          <!-- <ion-col size="3" class="ion-no-padding" *ngIf="payInvo">
+            <ion-card class="items-container2">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="12" class="ion-margin-top">
+                    <ion-label class="ion-padding"><strong>صافي المبلغ  :</strong>  <ion-text>{{payInvo.tot_pr}} </ion-text></ion-label>
+                  
+                  </ion-col>
+                  
+                  <ion-col size="12" class="ion-margin-top">
+                    <ion-label class="ion-padding"><strong>الخصــم :</strong>  <ion-text>{{payInvo.discount}} </ion-text></ion-label>
+                    
+                  </ion-col>
+
+                  <ion-col size="12"  class="ion-margin-top">
+                    <ion-label class="ion-padding"><strong>الضريبة : </strong>  <ion-text>{{payInvo.taxTot}} </ion-text></ion-label>
+                    
+                  </ion-col>
+
+                 
+                  <ion-col size="12"   class="ion-margin-top">
+                    <ion-label class="ion-padding"><strong>  صافي المبلغ مع الضريبة  :</strong> <ion-text>{{taxAll}} </ion-text></ion-label>
+                    
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card>
+          </ion-col> -->
+        </ion-row>
+      </ion-grid>
+    </ion-col> 
+  </ion-row>
+
+</ion-grid>
+
+</ion-content>
+<ion-footer>
+<ion-grid dir="rtl">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="9" class="ion-no-padding" >
+        <ion-grid dir="rtl">
+          <!-- <ion-row >
+            <ion-col size="4" dir="ltr">
+              <ion-radio-group [(ngModel)]="payInvo.pay_method">
+                 <ion-item  lines="none">
+                  <ion-label class="radioLbl">نقدا</ion-label>
+                  <ion-radio value="cash"></ion-radio>
+                  <ion-label  class="radioLbl">بطاقة</ion-label>
+                  <ion-radio value="card"></ion-radio>
+                  </ion-item>
+              </ion-radio-group>
+            </ion-col>
+            <ion-col size="2">
+              <ion-label class="ion-padding"><strong> المستلم نقدا </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="payInvo.pay" (ionChange)="payChange($event)"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="2">
+              <ion-label class="ion-padding"><strong>   الخصــم</strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="payInvo.discount" (ionChange)="discountChange($event)"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="2" >
+              <ion-label class="ion-padding"><strong>المتبقي </strong></ion-label>
+              <ion-item class="custInput">
+                <ion-input [(ngModel)]="payInvo.changee" [readonly]="true"></ion-input>
+              </ion-item>
+            </ion-col> 
+          </ion-row> -->
+          <!-- <ion-row class="ion-justify-content-center"> 
+            <ion-col size="5">
+             <div *ngIf="printArr">
+              <qrcode [qrdata]="printArr[0].qrcodedata" size="256" level="'M'"></qrcode>
+             </div> 
+            </ion-col>
+          </ion-row> -->
+        </ion-grid>
+      
+    </ion-col>
+
+    <ion-col size="4">
+      <ion-button size="small"   expand="block" fill="outline" (click)="save()"  color="medium" class="custButton rad10">
+        <ion-icon class="ico " color="dark" name="add-circle-outline"></ion-icon>
+           <ion-text color="dark"> حفــظ   </ion-text>     
+      </ion-button> 
+      <!-- <ion-button class="custButton" expand="block" routerDirection="root" color="primary" (click)="save()">
+        <ion-icon name="checkmark-sharp" color="light" slot="end"></ion-icon>
+        <ion-label class="ion-text-center"> OK </ion-label>
+      </ion-button> -->
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-footer>

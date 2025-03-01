@@ -108,6 +108,14 @@ saveCaseLawyer( caseLawyer){
   )
 }
 
+
+saveQuestions( caseLawyer){  
+  caseLawyer = JSON.stringify(caseLawyer) 
+  return this.http.post(this.api+'questions/createMulti.php',
+    caseLawyer
+  )
+}
+
 saveSessionLawyer( caseLawyer){  
   caseLawyer = JSON.stringify(caseLawyer) 
   return this.http.post(this.api+'sessionlawyers/createMulti.php',
@@ -233,9 +241,16 @@ saveNotifications( arr){
   getTopCases( ){  
     return this.http.get(this.api+'cases/read.php')
   }
+  getTopDashboard( ){  
+    return this.http.get(this.api+'dashboard/read.php')
+  }
 
   getTopTasks( ){  
     return this.http.get(this.api+'tasks/read.php')
+  }
+
+  getTopExsam( ){  
+    return this.http.get(this.api+'examinations/read.php')
   }
 
   getTopNtification( ){  
@@ -298,6 +313,12 @@ saveNotifications( arr){
 
   saveCase(newCase){
     return this.http.post(this.api+'cases/create.php', 
+      newCase
+     )
+  }
+  
+  saveExam(newCase){
+    return this.http.post(this.api+'examinations/create.php', 
       newCase
      )
   }

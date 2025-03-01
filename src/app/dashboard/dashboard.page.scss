@@ -1,0 +1,120 @@
+ 
+ .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin: 16px 0;
+  color: var(--ion-color-dark);
+}
+
+.stat-card {
+  --background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.stat-card ion-card-content {
+  padding: 16px;
+}
+
+.stat-card p {
+  color: var(--ion-color-medium);
+  margin: 0;
+  text-align: center;
+}
+
+ion-button {
+  --padding-start: 4px;
+  --padding-end: 4px;
+}
+
+.graph-card {
+  height: 100%;
+  margin: 16px;
+}
+
+.h100{
+  padding: 16px;
+   height: 100%;
+   min-height: 300px;
+}
+
+.graph-card ion-card-content {
+  padding: 16px;
+  height: 300px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.search-container {
+  margin-top: 16px;
+  padding: 16px;
+  background: transparent;
+}
+
+.search-card {
+  margin: 0;
+  border-radius: 24px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.custom-searchbar {
+  height: 60px;
+  border-radius: 30px;
+  border-color: var(--ion-color-light-shade);
+  padding-top: 7px;
+}
+
+ 
+/* Keep your existing styles */
+.stat-card {
+  --background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.stat-card ion-card-content {
+  padding: 20px;
+}
+
+.stat-card h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.stat-card p {
+  color: var(--ion-color-medium);
+  margin: 0;
+}
+
+
+
+  .stat-card {
+    --background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .stat-card ion-card-content {
+    padding: 20px;
+  }
+  
+  .stat-card h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  .stat-card p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+ 

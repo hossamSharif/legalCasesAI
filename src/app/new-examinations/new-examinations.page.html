@@ -1,0 +1,171 @@
+<!-- exam-create.page.html -->
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Create New Exam</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-grid>
+        <!-- First Row - Basic Fields -->
+        <ion-row>
+          <ion-col size="6" col-sm="6" col-md="4"  class="ion-margin-top">
+            <ion-label position="stacked">Exam Name</ion-label>
+            <ion-item  class="custInput"> 
+              <ion-input [(ngModel)]="exam.exam_name" required></ion-input>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="3" class="ion-margin-top">
+            <ion-label class="ion-padding"><strong>date  </strong></ion-label>
+            <ion-item class="custInput">  
+            <ion-datetime-button datetime="datetime2"></ion-datetime-button> 
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime 
+                [(ngModel)]="exam.exam_date" 
+                presentation="date"  
+                [locale]="locale"
+                id="datetime2">
+              </ion-datetime>
+              </ng-template>
+            </ion-modal>  
+            </ion-item> 
+          </ion-col>
+
+           
+  
+          <ion-col size="3" col-sm="6" col-md="2"  class="ion-margin-top">
+            <ion-label position="stacked">Duration (min)</ion-label>
+            <ion-item  class="custInput"> 
+              <ion-input type="number" [(ngModel)]="exam.duration"></ion-input>
+            </ion-item>
+          </ion-col>
+  
+          <ion-col size="3" col-sm="6" col-md="3"  class="ion-margin-top">
+            <ion-label position="stacked">Full Mark</ion-label>
+            <ion-item class="custInput"> 
+              <ion-input type="number" [(ngModel)]="exam.full_mark"></ion-input>
+            </ion-item>
+          </ion-col>
+  
+          <ion-col size="3" col-sm="6" col-md="3"  class="ion-margin-top">
+            <ion-label position="stacked">Pass Mark</ion-label>
+            <ion-item  class="custInput">  
+              <ion-input type="number" [(ngModel)]="exam.pass_mark"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+  
+        <!-- Second Row - Description -->
+        <ion-row>
+          <ion-col size="9"  class="ion-margin-top">
+            <ion-label position="stacked">Description</ion-label>
+            <ion-item  class="custInput"> 
+              <ion-textarea 
+                [(ngModel)]="exam.exam_desc" 
+                rows="3" 
+                auto-grow="true"
+                placeholder="Enter exam description..."
+              ></ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Questions Section -->
+  <ion-card *ngFor="let question of exam.questions; let i = index">
+    <ion-item lines="none">
+      <ion-card-title  >Question {{i + 1}}</ion-card-title>
+      <ion-button fill="clear" color="danger" (click)="removeQuestion(i)" slot="end">
+        <ion-icon name="trash" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" class="ion-margin-top">
+            <ion-label position="stacked">Question Text</ion-label>
+            <ion-item class="custInput"> 
+              <ion-textarea [(ngModel)]="question.question_text" rows="2"></ion-textarea>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" class="ion-margin-top">
+            <ion-label>Question Type</ion-label>
+            <ion-item class="custInput"> 
+              <ion-select [(ngModel)]="question.type" (ionChange)="onQuestionTypeChange(question)">
+                <ion-select-option value="multiple">Multiple Choice</ion-select-option>
+                <ion-select-option value="fill">Fill in Blank</ion-select-option>
+                <ion-select-option value="text">Text Answer</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="4" class="ion-margin-top">
+            <ion-label position="stacked">Marks</ion-label>
+            <ion-item class="custInput"> 
+              <ion-input type="number" [(ngModel)]="question.question_mark"></ion-input>
+            </ion-item>
+          </ion-col> 
+        </ion-row>
+      </ion-grid>
+      
+
+     
+
+      
+
+      <!-- Multiple Choice Answers -->
+      <div *ngIf="question.type === 'multiple'" >
+        <div *ngFor="let answer of question.answers; let j = index">
+          <ion-label position="stacked">Answer {{j + 1}}</ion-label>
+          <ion-item class="custInput"> 
+            <ion-input [(ngModel)]="answer.answer_text"></ion-input>
+            <!-- <ion-checkbox slot="end" [(ngModel)]="answer.IsCorrect"></ion-checkbox> -->
+            <ion-button fill="clear" color="danger" (click)="removeAnswer(question, j)">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+        <ion-button fill="clear" (click)="addAnswer(question)">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Answer
+        </ion-button>
+      </div>
+
+      <!-- Fill in Blank Answer -->
+      <div *ngIf="question.type === 'fill'" class="ion-margin-top">
+        <ion-label position="stacked">Correct Answer</ion-label>
+        <ion-item class="custInput"> 
+          <ion-input [(ngModel)]="question.answers[0].answer_text"></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Text Answer -->
+      <div *ngIf="question.type === 'text'" class="ion-margin-top">
+        <ion-label position="stacked">Model Answer</ion-label>
+        <ion-item class="custInput"> 
+          <ion-textarea [(ngModel)]="question.answers[0].answer_text" rows="3"></ion-textarea>
+        </ion-item>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button class="ion-margin" (click)="addQuestion()">
+    <ion-icon name="add-circle" slot="start"></ion-icon>
+    Add Question
+  </ion-button>
+
+  
+</ion-content>
+<ion-footer>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="4">
+        <ion-button expand="block" fill="outline" (click)="saveExam()">Save Exam</ion-button>
+      </ion-col> 
+    </ion-row>
+ </ion-grid>
+</ion-footer>

@@ -1,0 +1,37 @@
+.table-container {
+    overflow-x: auto;
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      
+      th {
+        background-color: #f4f4f4;
+      }
+    }
+  }
+  
+  .add-item-btn {
+    margin: 20px 0;
+  }
+  
+  .totals-section {
+    margin-top: 20px;
+    border-top: 2px solid #ddd;
+    padding-top: 20px;
+  }
+  
+  .save-btn {
+    margin-top: 20px;
+  }
+  
+  ion-input {
+    --padding-start: 8px;
+  }
+  
