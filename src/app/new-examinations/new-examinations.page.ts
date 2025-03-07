@@ -91,6 +91,7 @@ removeAnswer(question: any, answerIndex: number) {
     this.exam.questions.push({
       question_text: '',
       question_mark: 0,
+      qyestion_refrence: this.generateQuestionRefrence(),
       type: 'multiple',
       answers: []
     });
@@ -100,7 +101,8 @@ removeAnswer(question: any, answerIndex: number) {
   addAnswer(question: any) {
     question.answers.push({
       answer_text: '',
-      IsCorrect: false
+      IsCorrect: false,
+      qyestion_refrence:question.question_refrence
     });
     
     // Ensure at least one correct answer is selected
@@ -114,14 +116,21 @@ removeAnswer(question: any, answerIndex: number) {
     if (question.type === 'multiple') {
       // Start with 2 answers minimum
       question.answers.push(
-        { answer_text: '', IsCorrect: true , },
-        { answer_text: '', IsCorrect: false  }
+        { answer_text: '', IsCorrect: true , qyestion_refrence:question.question_refrence },
+        { answer_text: '', IsCorrect: false , qyestion_refrence:question.question_refrence  }
       );
     } else {
       // Single answer for other types
-      question.answers.push({ answer_text: '' });
+      question.answers.push({ answer_text: '', IsCorrect: true , qyestion_refrence:question.question_refrence  });
     }
   }
+
+  generateQuestionRefrence() {
+    // Generate a random number between 1 and 1000000 and current time in milliseconds to it and return it
+    const randomNumber = Math.floor(Math.random() * 1000000) + Date.now();
+    return randomNumber.toString();
+  }
+ 
 
   validate(){ 
     this.isSubmitted = true; 
